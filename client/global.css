@@ -1,0 +1,122 @@
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Tailwind CSS theme
+   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
+   * A different format will require also updating the theme in tailwind.config.ts.
+  */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+
+    --primary: 99 49% 25%; /* #365F20 in HSL */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 68 67% 50%;
+    --secondary-foreground: 0 0% 20%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 68 67% 50%;
+    --accent-foreground: 0 0% 20%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 92%;
+    --input: 0 0% 96%;
+    --ring: 99 49% 25%; /* #365F20 in HSL */
+
+    --radius: 2.0rem;
+
+    --sidebar-background: 99 49% 25%; /* #365F20 in HSL */
+
+    --sidebar-foreground: 0 0% 98%;
+
+    --sidebar-primary: 68 67% 50%;
+
+    --sidebar-primary-foreground: 0 0% 20%;
+
+    --sidebar-accent: 99 49% 25%; /* #365F20 in HSL */
+
+    --sidebar-accent-foreground: 0 0% 98%;
+
+    --sidebar-border: 99 49% 25%; /* #365F20 in HSL */
+
+    --sidebar-ring: 68 67% 50%;
+  }
+
+  .dark {
+    --background: 99 49% 25%; /* #365F20 in HSL */
+    --foreground: 0 0% 98%;
+
+    --card: 99 49% 25%; /* #365F20 in HSL */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 99 49% 25%; /* #365F20 in HSL */
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 99 49% 25%; /* #365F20 in HSL */
+
+    --secondary: 68 67% 50%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 99 49% 25%; /* #365F20 in HSL */
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 99 49% 25%; /* #365F20 in HSL */
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 99 49% 25%; /* #365F20 in HSL */
+    --input: 99 49% 25%; /* #365F20 in HSL */
+    --ring: 68 67% 50%;
+    --sidebar-background: 99 49% 25%; /* #365F20 in HSL */
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 68 67% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 99 49% 25%; /* #365F20 in HSL */
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 99 49% 25%; /* #365F20 in HSL */
+    --sidebar-ring: 68 67% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.875rem; /* Adjust this value as needed to match previous size */
+  }
+
+  :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    white-space: pre;
+  }
+}
