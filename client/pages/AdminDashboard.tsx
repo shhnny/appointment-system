@@ -24,6 +24,8 @@ export default function AdminDashboard() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [serviceDemand, setServiceDemand] = useState<ServiceDemand[]>([]);
   const [currentDate, setCurrentDate] = useState("");
+  const [currentGreeting, setCurrentGreeting] = useState("");
+
 
   // Initialize or reset all data to zero/empty
   const resetData = () => {
@@ -67,6 +69,15 @@ export default function AdminDashboard() {
       day: "numeric",
     };
     setCurrentDate(now.toLocaleDateString("en-US", options));
+
+    const hour = now.getHours();
+    if (hour >= 5 && hour < 12) {
+      setCurrentGreeting("Good Morning");
+    } else if (hour >= 12 && hour < 18) {
+      setCurrentGreeting("Good Afternoon");
+    } else {
+      setCurrentGreeting("Good Evening");
+    }
 
     // Calculate service demand from actual appointments
     calculateServiceDemand(savedAppointments || []);
@@ -223,7 +234,7 @@ export default function AdminDashboard() {
             {/* Welcome section */}
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-foreground">
-                Good Morning Yul!
+                {currentGreeting} Yul! {/* CHANGE THIS LINE */}
               </h1>
               <p className="text-muted-foreground">
                 {currentDate || "Loading date..."}
@@ -234,13 +245,13 @@ export default function AdminDashboard() {
             <div className="flex gap-2 mb-4">
               <button
                 onClick={resetData}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors"
+                className="px-4 py-2 bg-red-800 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors"
               >
                 Reset All Data
               </button>
               <button
                 onClick={addSampleData}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
+                className="px-4 py-2 bg-blue-800 text-white rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
               >
                 Add Sample Data
               </button>
@@ -333,7 +344,7 @@ export default function AdminDashboard() {
                 {/* Reports and Analytics */}
                 <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
                   <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
-                    <span>📊</span> Reports and Analytics
+                    Reports and Analytics
                   </h2>
 
                   {/* Service Demand Ranking */}

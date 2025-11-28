@@ -42,7 +42,7 @@ export default function Settings() {
   const [barangayInfo, setBarangayInfo] = useState<BarangayInfo>({
     name: "JP Rizal",
     captain: "Kipkip Moran",
-    address: "123 Rizal Street, Bulusan City",
+    address: "123 Rizal Street, Butuan City",
     contact: "0989-123-4567",
   });
 

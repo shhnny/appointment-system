@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import AdminSidebar from "@/components/AdminSidebar";
 import AdminHeader from "@/components/AdminHeader";
+import AdminSidebar from "@/components/AdminSidebar";
 import { storage } from "@/lib/storage";
+import { useEffect, useState } from "react";
 
 interface Appointment {
   id: string;
@@ -17,11 +17,32 @@ interface Appointment {
 export default function Appointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [filterStatus, setFilterStatus] = useState("All Status");
+  const [currentDate, setCurrentDate] = useState("");
+  const [currentGreeting, setCurrentGreeting] = useState("");
 
   useEffect(() => {
     const saved = storage.getAppointments();
     setAppointments(saved);
-  }, []);
+
+    // MOVE THE DATE AND GREETING LOGIC INSIDE useEffect
+    const now = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    setCurrentDate(now.toLocaleDateString("en-US", options));
+
+    const hour = now.getHours();
+    if (hour >= 5 && hour < 12) {
+      setCurrentGreeting("Good Morning");
+    } else if (hour >= 12 && hour < 18) {
+      setCurrentGreeting("Good Afternoon");
+    } else {
+      setCurrentGreeting("Good Evening");
+    }
+  }, []); // Empty dependency array means this runs once on mount
 
   const updateStatus = (id: string, newStatus: string) => {
     const updated = appointments.map((app) =>
@@ -35,21 +56,22 @@ export default function Appointments() {
     filterStatus === "All Status"
       ? appointments
       : appointments.filter((app) => app.status === filterStatus);
+
   return (
     <div className="flex h-screen bg-gray-50">
       <AdminSidebar />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader />
+        <AdminHeader currentDate={currentDate} />
 
         <main className="flex-1 overflow-auto">
           <div className="p-6">
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-foreground">
-                Good Morning Yul!
+                {currentGreeting} Yul!
               </h1>
               <p className="text-muted-foreground">
-                Wednesday, October 15 2025
+                {currentDate || "Loading date..."}
               </p>
             </div>
 
@@ -60,14 +82,14 @@ export default function Appointments() {
                     Appointments
                   </h2>
                   <div className="flex gap-3">
-                    <span className="px-3 py-1 bg-status-pending text-white rounded-full text-sm font-semibold">
+                    <span className="px-3 py-1 bg-yellow-500 text-white rounded-full text-sm font-semibold">
                       Pending:{" "}
                       {
                         appointments.filter((a) => a.status === "Pending")
                           .length
                       }
                     </span>
-                    <span className="px-3 py-1 bg-primary text-primary-foreground rounded-full text-sm font-semibold">
+                    <span className="px-3 py-1 bg-blue-500 text-white rounded-full text-sm font-semibold">
                       Today's: {appointments.length}
                     </span>
                   </div>
@@ -138,10 +160,12 @@ export default function Appointments() {
                       filtered.map((item) => {
                         const statusColor =
                           item.status === "Pending"
-                            ? "bg-status-pending"
+                            ? "bg-yellow-500"
                             : item.status === "Confirmed"
-                              ? "bg-status-confirmed"
-                              : "bg-status-cancelled";
+                              ? "bg-green-500"
+                              : item.status === "Completed"
+                                ? "bg-blue-500"
+                                : "bg-red-500";
 
                         return (
                           <tr
