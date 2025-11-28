@@ -64,7 +64,7 @@ export default function Appointments() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminHeader currentDate={currentDate} />
 
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto  transition-all duration-75">
           <div className="p-6">
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-foreground">

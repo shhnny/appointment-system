@@ -757,28 +757,7 @@ export default function Settings() {
                   </div>
                 </div>
 
-                {/* System Status */}
-                <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
-                  <h3 className="text-lg font-bold text-foreground mb-4">
-                    System Status
-                  </h3>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span>Appointments Today:</span>
-                      <span className="font-semibold">12</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Pending Requests:</span>
-                      <span className="font-semibold text-yellow-500">5</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>System Uptime:</span>
-                      <span className="font-semibold text-green-500">
-                        99.9%
-                      </span>
-                    </div>
-                  </div>
-                </div>
+
               </div>
             </div>
 

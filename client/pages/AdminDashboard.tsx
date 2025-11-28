@@ -229,7 +229,7 @@ export default function AdminDashboard() {
         <AdminHeader currentDate={currentDate} />
 
         {/* Content */}
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto min-h-0">
           <div className="p-6">
             {/* Welcome section */}
             <div className="mb-6">
@@ -344,7 +344,7 @@ export default function AdminDashboard() {
                 {/* Reports and Analytics */}
                 <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
                   <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
-                    Reports and Analytics
+                    <span></span>Reports and Analytics
                   </h2>
 
                   {/* Service Demand Ranking */}
