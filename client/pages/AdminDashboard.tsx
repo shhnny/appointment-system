@@ -26,7 +26,6 @@ export default function AdminDashboard() {
   const [currentDate, setCurrentDate] = useState("");
   const [currentGreeting, setCurrentGreeting] = useState("");
 
-
   // Initialize or reset all data to zero/empty
   const resetData = () => {
     const emptyAppointments: Appointment[] = [];
@@ -55,10 +54,16 @@ export default function AdminDashboard() {
     storage.clearAll();
   };
 
-  // Load initial data
+  // Load initial data - sort by newest first
   useEffect(() => {
     const savedAppointments = storage.getAppointments();
-    setAppointments(savedAppointments || []);
+    // Sort appointments by date/time in descending order (newest first)
+    const sortedAppointments = (savedAppointments || []).sort((a, b) => {
+      const dateA = new Date(`${a.date} ${a.time}`).getTime();
+      const dateB = new Date(`${b.date} ${b.time}`).getTime();
+      return dateB - dateA; // Newest first
+    });
+    setAppointments(sortedAppointments);
 
     // Set current date
     const now = new Date();
@@ -80,7 +85,7 @@ export default function AdminDashboard() {
     }
 
     // Calculate service demand from actual appointments
-    calculateServiceDemand(savedAppointments || []);
+    calculateServiceDemand(sortedAppointments);
   }, []);
 
   // Calculate service demand based on actual appointments
@@ -141,7 +146,7 @@ export default function AdminDashboard() {
     calculateServiceDemand(appointments);
   }, [appointments]);
 
-  // Add sample data for testing (optional)
+  // Add sample data for testing (optional) - new appointments will be added at the top
   const addSampleData = () => {
     const sampleAppointments: Appointment[] = [
       {
@@ -176,8 +181,13 @@ export default function AdminDashboard() {
       },
     ];
 
-    setAppointments(sampleAppointments);
-    sampleAppointments.forEach((appt) => storage.saveAppointment(appt));
+    // Add new appointments at the beginning (top) of the list
+    const updatedAppointments = [...sampleAppointments, ...appointments];
+    setAppointments(updatedAppointments);
+
+    // Update storage
+    storage.clearAll();
+    updatedAppointments.forEach((appt) => storage.saveAppointment(appt));
   };
 
   // Update appointment status
@@ -229,12 +239,12 @@ export default function AdminDashboard() {
         <AdminHeader currentDate={currentDate} />
 
         {/* Content */}
-        <main className="flex-1 overflow-auto min-h-0">
+        <main className="flex-1 overflow-auto transition-all duration-75">
           <div className="p-6">
             {/* Welcome section */}
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-foreground">
-                {currentGreeting} Yul! {/* CHANGE THIS LINE */}
+                {currentGreeting} Yul!
               </h1>
               <p className="text-muted-foreground">
                 {currentDate || "Loading date..."}
@@ -340,7 +350,7 @@ export default function AdminDashboard() {
             {/* Main content grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left column - Analytics */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-3 space-y-6"> {/* Changed from lg:col-span-2 to lg:col-span-3 */}
                 {/* Reports and Analytics */}
                 <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
                   <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
@@ -382,7 +392,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* Appointments table */}
+                {/* Appointments table - Made wider container */}
                 <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-semibold text-foreground">
@@ -393,26 +403,28 @@ export default function AdminDashboard() {
                       {appointments.length}
                     </span>
                   </div>
-                  <div className="overflow-x-auto">
+
+                  {/* Scrollable container with wider layout */}
+                  <div className="overflow-x-auto max-h-96">
                     <table className="w-full text-sm">
-                      <thead>
+                      <thead className="sticky top-0 bg-white z-10">
                         <tr className="border-b border-border">
-                          <th className="text-left py-2 px-2 font-semibold text-muted-foreground">
+                          <th className="text-left py-3 px-3 font-semibold text-muted-foreground">
                             Name
                           </th>
-                          <th className="text-left py-2 px-2 font-semibold text-muted-foreground">
+                          <th className="text-left py-3 px-3 font-semibold text-muted-foreground">
                             Service
                           </th>
-                          <th className="text-left py-2 px-2 font-semibold text-muted-foreground">
+                          <th className="text-left py-3 px-3 font-semibold text-muted-foreground">
                             Date & Time
                           </th>
-                          <th className="text-left py-2 px-2 font-semibold text-muted-foreground">
+                          <th className="text-left py-3 px-3 font-semibold text-muted-foreground">
                             Phone
                           </th>
-                          <th className="text-left py-2 px-2 font-semibold text-muted-foreground">
+                          <th className="text-left py-3 px-3 font-semibold text-muted-foreground">
                             Status
                           </th>
-                          <th className="text-left py-2 px-2 font-semibold text-muted-foreground">
+                          <th className="text-left py-3 px-3 font-semibold text-muted-foreground">
                             Actions
                           </th>
                         </tr>
@@ -422,38 +434,38 @@ export default function AdminDashboard() {
                           <tr>
                             <td
                               colSpan={6}
-                              className="py-8 px-2 text-center text-muted-foreground"
+                              className="py-8 px-3 text-center text-muted-foreground"
                             >
                               No appointments yet. Click "Add Sample Data" to
                               see demo data.
                             </td>
                           </tr>
                         ) : (
-                          appointments.slice(0, 5).map((item) => (
+                          appointments.slice(0, 10).map((item) => (
                             <tr
                               key={item.id}
                               className="border-b border-border hover:bg-muted"
                             >
-                              <td className="py-3 px-2 text-foreground">
+                              <td className="py-3 px-3 text-foreground">
                                 {item.fullName}
                               </td>
-                              <td className="py-3 px-2 text-foreground">
+                              <td className="py-3 px-3 text-foreground">
                                 {item.purpose}
                               </td>
-                              <td className="py-3 px-2 text-foreground">
+                              <td className="py-3 px-3 text-foreground">
                                 {item.date} @ {item.time}
                               </td>
-                              <td className="py-3 px-2 text-foreground">
+                              <td className="py-3 px-3 text-foreground">
                                 {item.phone}
                               </td>
-                              <td className="py-3 px-2">
+                              <td className="py-3 px-3">
                                 <span
                                   className={`${getStatusClass(item.status)} px-3 py-1 rounded-full text-xs font-semibold`}
                                 >
                                   {item.status}
                                 </span>
                               </td>
-                              <td className="py-3 px-2">
+                              <td className="py-3 px-3">
                                 <div className="flex gap-2">
                                   <button
                                     onClick={() =>
@@ -481,11 +493,6 @@ export default function AdminDashboard() {
                     </table>
                   </div>
                 </div>
-              </div>
-
-              {/* Right column - Empty now since profile card is removed */}
-              <div className="space-y-6">
-                {/* This space can be used for other widgets in the future */}
               </div>
             </div>
 

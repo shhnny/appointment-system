@@ -28,13 +28,40 @@ export default function BookAppointment() {
   });
   const [bookingConfirmation, setBookingConfirmation] =
     useState<BookingConfirmation | null>(null);
+  const [errors, setErrors] = useState<{
+    fullName?: string;
+    email?: string;
+    phone?: string;
+    date?: string;
+    time?: string;
+    purpose?: string;
+  }>({});
+
+  // Get minimum date (tomorrow)
+  const getMinDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  };
+
+  // Email validation - requires @gmail.com
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    return emailRegex.test(email);
+  };
+
+  // Phone number validation - Philippine format
+  const validatePhone = (phone: string): boolean => {
+    const phoneRegex = /^(09|\+639)\d{9}$/;
+    return phoneRegex.test(phone.replace(/\s/g, ''));
+  };
 
   // Generate time slots from 7:00 AM to 5:00 PM in 30-minute intervals
   const generateTimeSlots = () => {
     const slots = [];
-    for (let hour = 7; hour <= 17; hour++) { // 7 AM to 5 PM
+    for (let hour = 7; hour <= 17; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
-        if (hour === 17 && minute > 0) break; // Stop at 5:00 PM
+        if (hour === 17 && minute > 0) break;
 
         const period = hour >= 12 ? 'PM' : 'AM';
         const displayHour = hour > 12 ? hour - 12 : hour;
@@ -51,26 +78,47 @@ export default function BookAppointment() {
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
   };
 
   const handleNext = () => {
+    const newErrors: typeof errors = {};
+
     if (step === 1) {
-      if (formData.fullName && formData.email && formData.phone) {
+      if (!formData.fullName) newErrors.fullName = "Full name is required";
+      if (!formData.email) newErrors.email = "Email is required";
+      else if (!validateEmail(formData.email)) newErrors.email = "Please enter a valid Gmail address";
+      if (!formData.phone) newErrors.phone = "Phone number is required";
+      else if (!validatePhone(formData.phone)) newErrors.phone = "Please enter a valid Philippine phone number (09XXXXXXXXX or +639XXXXXXXXX)";
+
+      if (Object.keys(newErrors).length === 0) {
+        setErrors({});
         setStep(2);
+      } else {
+        setErrors(newErrors);
       }
     } else if (step === 2) {
-      if (formData.date && formData.time && formData.purpose) {
+      if (!formData.date) newErrors.date = "Date is required";
+      if (!formData.time) newErrors.time = "Time is required";
+      if (!formData.purpose) newErrors.purpose = "Purpose is required";
+
+      if (Object.keys(newErrors).length === 0) {
+        setErrors({});
         setBookingConfirmation({
           date: formData.date,
           time: formData.time,
         });
         setStep(3);
+      } else {
+        setErrors(newErrors);
       }
     }
   };
 
   const handleSubmit = () => {
-    // Build appointment object with required fields (id, status) and save it
     const appointment = {
       id: `${Date.now().toString()}-${Math.random().toString(36).slice(2, 9)}`,
       status: "pending",
@@ -82,10 +130,8 @@ export default function BookAppointment() {
       purpose: formData.purpose,
     };
 
-    // Save the appointment
     storage.saveAppointment(appointment);
 
-    // Reset the form and go back to step 1
     setStep(1);
     setFormData({
       fullName: "",
@@ -95,6 +141,7 @@ export default function BookAppointment() {
       time: "",
       purpose: "",
     });
+    setErrors({});
   };
 
   return (
@@ -171,9 +218,11 @@ export default function BookAppointment() {
                     onChange={(e) =>
                       handleInputChange("fullName", e.target.value)
                     }
-                    className="w-full pl-10 pr-4 py-3 bg-muted rounded-lg border border-transparent focus:outline-none focus:border-primary"
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${errors.fullName ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
+                      }`}
                   />
                 </div>
+                {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
               </div>
 
               <div>
@@ -195,12 +244,14 @@ export default function BookAppointment() {
                   </div>
                   <input
                     type="email"
-                    placeholder="Email Address"
+                    placeholder="Email Address (Gmail only)"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-muted rounded-lg border border-transparent focus:outline-none focus:border-primary"
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
+                      }`}
                   />
                 </div>
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
 
               <div>
@@ -222,12 +273,14 @@ export default function BookAppointment() {
                   </div>
                   <input
                     type="tel"
-                    placeholder="Phone Number"
+                    placeholder="Phone Number (09XXXXXXXXX or +639XXXXXXXXX)"
                     value={formData.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-muted rounded-lg border border-transparent focus:outline-none focus:border-primary"
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
+                      }`}
                   />
                 </div>
+                {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
               </div>
 
               <button
@@ -263,9 +316,12 @@ export default function BookAppointment() {
                     type="date"
                     value={formData.date}
                     onChange={(e) => handleInputChange("date", e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-muted rounded-lg border border-transparent focus:outline-none focus:border-primary"
+                    min={getMinDate()}
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${errors.date ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
+                      }`}
                   />
                 </div>
+                {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
               </div>
 
               <div>
@@ -288,7 +344,8 @@ export default function BookAppointment() {
                   <select
                     value={formData.time}
                     onChange={(e) => handleInputChange("time", e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-muted rounded-lg border border-transparent focus:outline-none focus:border-primary appearance-none"
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none appearance-none ${errors.time ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
+                      }`}
                   >
                     <option value="">Select Time</option>
                     {timeSlots.map((slot) => (
@@ -298,6 +355,7 @@ export default function BookAppointment() {
                     ))}
                   </select>
                 </div>
+                {errors.time && <p className="text-red-500 text-sm mt-1">{errors.time}</p>}
               </div>
 
               <div>
@@ -322,7 +380,8 @@ export default function BookAppointment() {
                     onChange={(e) =>
                       handleInputChange("purpose", e.target.value)
                     }
-                    className="w-full pl-10 pr-4 py-3 bg-muted rounded-lg border border-transparent focus:outline-none focus:border-primary appearance-none"
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none appearance-none ${errors.purpose ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
+                      }`}
                   >
                     <option value="">Purpose of visit</option>
                     <option value="Barangay Clearance">Barangay Clearance</option>
@@ -331,6 +390,7 @@ export default function BookAppointment() {
                     <option value="Blotter / Mediation">Blotter / Mediation</option>
                   </select>
                 </div>
+                {errors.purpose && <p className="text-red-500 text-sm mt-1">{errors.purpose}</p>}
               </div>
 
               <div className="flex gap-4">

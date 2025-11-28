@@ -114,11 +114,6 @@ export default function Appointments() {
                     <option>Cancelled</option>
                   </select>
 
-                  <input
-                    type="text"
-                    placeholder="Search appointments..."
-                    className="flex-1 px-4 py-2 bg-muted border border-border rounded-lg focus:outline-none focus:border-primary"
-                  />
                 </div>
               </div>
 
