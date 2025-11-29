@@ -756,11 +756,8 @@ export default function Settings() {
                     </button>
                   </div>
                 </div>
-
-
               </div>
             </div>
-
             {/* Footer */}
             <div className="mt-8 text-center text-xs text-muted-foreground py-4 border-t border-border">
               Barangay Information and Service Management System © 2025 - All

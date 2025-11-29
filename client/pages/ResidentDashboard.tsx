@@ -36,7 +36,7 @@ export default function ResidentDashboard() {
           {/* Logo and title */}
           <div className="mb-12 text-center">
             <div className="flex flex-col items-center justify-center gap-4 mb-6">
-              <div className="w-32 h-32 flex items-center justify-center">
+              <div className="w-90 h-10 flex items-center justify-center">
                 <img
                   src="/assets/JP RIZAL.png"
                   alt="Barangay JP Rizal Logo"

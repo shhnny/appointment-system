@@ -30,17 +30,17 @@ export default function Index() {
                 <img
                   src="/assets/JP RIZAL.png"
                   alt="Barangay JP Rizal Logo"
-                  className="w-34 h-34 object-contain" /* Bigger logo */
+                  className="w-30 h-34 object-contain" /* Bigger logo */
                 />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-foreground">Barangay JP Rizal</h2>
-                <p className="text-muted-foreground mt-1">Appointment System</p>
+                <h2 className="text-3xl font-bold text-foreground">Barangay <span className="text-primary">JP Rizal</span></h2>
+                <p className="text-muted-foreground mt-1 ">Appointment System</p>
               </div>
             </div>
           </div>
 
-          {/* Role selection */}
+
           <div className="w-full max-w-sm">
             <h3 className="text-xl font-bold text-center text-foreground mb-8">
               Select User Role
@@ -73,7 +73,7 @@ export default function Index() {
           {/* Mobile-only welcome section */}
           <div className="mt-8 lg:hidden w-full max-w-sm">
             <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 text-white text-center">
-              <h1 className="text-2xl font-bold mb-3">Welcome Back!</h1>
+              <h1 className="text-3xl font-bold mb-3">Welcome Back!</h1>
               <p className="text-white/90 text-sm">
                 Access essential barangay services, updates, and records securely.
               </p>
