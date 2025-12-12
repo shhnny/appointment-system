@@ -1,15 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import AdminLogin from "./pages/AdminLogin";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
 import Appointments from "./pages/Appointments";
-import Reports from "./pages/Reports";
-import Settings from "./pages/Settings";
-import HelpCentre from "./pages/HelpCentre";
-import Notifications from "./pages/Notifications";
-import ResidentDashboard from "./pages/ResidentDashboard";
 import BookAppointment from "./pages/BookAppointment";
+import HelpCentre from "./pages/HelpCentre";
+import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Notifications from "./pages/Notifications";
+import Reports from "./pages/Reports";
+import ResidentDashboard from "./pages/ResidentDashboard";
+import Settings from "./pages/Settings";
 
 function App() {
   return (

@@ -24,7 +24,7 @@ export default function Appointments() {
     const saved = storage.getAppointments();
     setAppointments(saved);
 
-    // MOVE THE DATE AND GREETING LOGIC INSIDE useEffect
+
     const now = new Date();
     const options: Intl.DateTimeFormatOptions = {
       weekday: "long",

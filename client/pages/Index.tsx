@@ -34,7 +34,7 @@ export default function Index() {
                 />
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-foreground">Barangay <span className="text-primary">JP Rizal</span></h2>
+                <h2 className="text-4xl font-bold text-foreground"> <span className="text-primary">hapsayRizal</span></h2>
                 <p className="text-muted-foreground mt-1 ">Appointment System</p>
               </div>
             </div>

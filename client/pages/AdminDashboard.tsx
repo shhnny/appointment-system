@@ -181,7 +181,7 @@ export default function AdminDashboard() {
       },
     ];
 
-    // Add new appointments at the beginning (top) of the list
+    // Add new appointments
     const updatedAppointments = [...sampleAppointments, ...appointments];
     setAppointments(updatedAppointments);
 
