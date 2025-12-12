@@ -71,7 +71,9 @@ export default function AdminLogin() {
                 />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-foreground">Barangay JP Rizal</h2>
+                <h2 className="text-2xl font-bold text-foreground">
+                  Barangay JP Rizal
+                </h2>
                 <p className="text-muted-foreground mt-1">Appointment System</p>
               </div>
             </div>
@@ -115,12 +117,6 @@ export default function AdminLogin() {
 
                 {/* Links */}
                 <div className="flex items-center justify-between text-sm">
-                  <Link
-                    to="/"
-                    className="text-muted-foreground hover:text-primary"
-                  >
-                    New? <span className="font-semibold">Click here.</span>
-                  </Link>
                   <a
                     href="#"
                     className="text-muted-foreground hover:text-primary"
@@ -138,11 +134,6 @@ export default function AdminLogin() {
                 </button>
               </div>
             </form>
-
-            {/* Google login */}
-            <button className="w-full mt-4 px-6 py-4 bg-muted text-foreground font-semibold rounded-lg hover:bg-muted/80 transition-all duration-200 transform hover:scale-105 border border-border">
-              Continue with Google?
-            </button>
           </div>
 
           {/* Mobile-only welcome section */}
@@ -150,8 +141,8 @@ export default function AdminLogin() {
             <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 text-white text-center">
               <h1 className="text-2xl font-bold mb-3">Welcome Back!</h1>
               <p className="text-white/90 text-sm">
-                Access administrative tools and maintain smooth barangay operations
-                with transparency and accuracy.
+                Access administrative tools and maintain smooth barangay
+                operations with transparency and accuracy.
               </p>
             </div>
           </div>

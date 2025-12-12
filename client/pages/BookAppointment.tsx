@@ -9,6 +9,7 @@ interface FormData {
   date: string;
   time: string;
   purpose: string;
+  otherPurpose: string;
 }
 
 interface BookingConfirmation {
@@ -25,6 +26,7 @@ export default function BookAppointment() {
     date: "",
     time: "",
     purpose: "",
+    otherPurpose: "",
   });
   const [bookingConfirmation, setBookingConfirmation] =
     useState<BookingConfirmation | null>(null);
@@ -35,13 +37,14 @@ export default function BookAppointment() {
     date?: string;
     time?: string;
     purpose?: string;
+    otherPurpose?: string;
   }>({});
 
   // Get minimum date (tomorrow)
   const getMinDate = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
+    return tomorrow.toISOString().split("T")[0];
   };
 
   // Email validation - requires @gmail.com
@@ -53,7 +56,7 @@ export default function BookAppointment() {
   // Phone number validation - Philippine format
   const validatePhone = (phone: string): boolean => {
     const phoneRegex = /^(09|\+639)\d{9}$/;
-    return phoneRegex.test(phone.replace(/\s/g, ''));
+    return phoneRegex.test(phone.replace(/\s/g, ""));
   };
 
   // Generate time slots from 7:00 AM to 5:00 PM in 30-minute intervals
@@ -63,10 +66,10 @@ export default function BookAppointment() {
       for (let minute = 0; minute < 60; minute += 30) {
         if (hour === 17 && minute > 0) break;
 
-        const period = hour >= 12 ? 'PM' : 'AM';
+        const period = hour >= 12 ? "PM" : "AM";
         const displayHour = hour > 12 ? hour - 12 : hour;
-        const timeString = `${displayHour}:${minute === 0 ? '00' : '30'} ${period}`;
-        const value = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        const timeString = `${displayHour}:${minute === 0 ? "00" : "30"} ${period}`;
+        const value = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
 
         slots.push({ display: timeString, value });
       }
@@ -90,9 +93,12 @@ export default function BookAppointment() {
     if (step === 1) {
       if (!formData.fullName) newErrors.fullName = "Full name is required";
       if (!formData.email) newErrors.email = "Email is required";
-      else if (!validateEmail(formData.email)) newErrors.email = "Please enter a valid Gmail address";
+      else if (!validateEmail(formData.email))
+        newErrors.email = "Please enter a valid Gmail address";
       if (!formData.phone) newErrors.phone = "Phone number is required";
-      else if (!validatePhone(formData.phone)) newErrors.phone = "Please enter a valid Philippine phone number (09XXXXXXXXX or +639XXXXXXXXX)";
+      else if (!validatePhone(formData.phone))
+        newErrors.phone =
+          "Please enter a valid Philippine phone number (09XXXXXXXXX or +639XXXXXXXXX)";
 
       if (Object.keys(newErrors).length === 0) {
         setErrors({});
@@ -105,12 +111,35 @@ export default function BookAppointment() {
       if (!formData.time) newErrors.time = "Time is required";
       if (!formData.purpose) newErrors.purpose = "Purpose is required";
 
+      if (formData.purpose === "Others" && !formData.otherPurpose.trim()) {
+        newErrors.otherPurpose = "Please specify your purpose";
+      }
+
       if (Object.keys(newErrors).length === 0) {
         setErrors({});
         setBookingConfirmation({
           date: formData.date,
           time: formData.time,
         });
+
+        // FIX: Save the appointment immediately when moving to step 3
+        const appointment = {
+          id: `${Date.now().toString()}-${Math.random().toString(36).slice(2, 9)}`,
+          status: "pending",
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          date: formData.date,
+          time: formData.time,
+          // Include otherPurpose if "Others" is selected
+          purpose:
+            formData.purpose === "Others"
+              ? `Others: ${formData.otherPurpose}`
+              : formData.purpose,
+        };
+
+        storage.saveAppointment(appointment);
+
         setStep(3);
       } else {
         setErrors(newErrors);
@@ -130,8 +159,6 @@ export default function BookAppointment() {
       purpose: formData.purpose,
     };
 
-    storage.saveAppointment(appointment);
-
     setStep(1);
     setFormData({
       fullName: "",
@@ -140,6 +167,7 @@ export default function BookAppointment() {
       date: "",
       time: "",
       purpose: "",
+      otherPurpose: "",
     });
     setErrors({});
   };
@@ -218,11 +246,16 @@ export default function BookAppointment() {
                     onChange={(e) =>
                       handleInputChange("fullName", e.target.value)
                     }
-                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${errors.fullName ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
-                      }`}
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${
+                      errors.fullName
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-transparent focus:border-primary"
+                    }`}
                   />
                 </div>
-                {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
+                {errors.fullName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+                )}
               </div>
 
               <div>
@@ -247,11 +280,16 @@ export default function BookAppointment() {
                     placeholder="Email Address (Gmail only)"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
-                      }`}
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${
+                      errors.email
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-transparent focus:border-primary"
+                    }`}
                   />
                 </div>
-                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               <div>
@@ -276,11 +314,16 @@ export default function BookAppointment() {
                     placeholder="Phone Number (09XXXXXXXXX or +639XXXXXXXXX)"
                     value={formData.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
-                      }`}
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${
+                      errors.phone
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-transparent focus:border-primary"
+                    }`}
                   />
                 </div>
-                {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                )}
               </div>
 
               <button
@@ -317,11 +360,16 @@ export default function BookAppointment() {
                     value={formData.date}
                     onChange={(e) => handleInputChange("date", e.target.value)}
                     min={getMinDate()}
-                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${errors.date ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
-                      }`}
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${
+                      errors.date
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-transparent focus:border-primary"
+                    }`}
                   />
                 </div>
-                {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
+                {errors.date && (
+                  <p className="text-red-500 text-sm mt-1">{errors.date}</p>
+                )}
               </div>
 
               <div>
@@ -344,8 +392,11 @@ export default function BookAppointment() {
                   <select
                     value={formData.time}
                     onChange={(e) => handleInputChange("time", e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none appearance-none ${errors.time ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
-                      }`}
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none appearance-none ${
+                      errors.time
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-transparent focus:border-primary"
+                    }`}
                   >
                     <option value="">Select Time</option>
                     {timeSlots.map((slot) => (
@@ -355,7 +406,9 @@ export default function BookAppointment() {
                     ))}
                   </select>
                 </div>
-                {errors.time && <p className="text-red-500 text-sm mt-1">{errors.time}</p>}
+                {errors.time && (
+                  <p className="text-red-500 text-sm mt-1">{errors.time}</p>
+                )}
               </div>
 
               <div>
@@ -380,18 +433,73 @@ export default function BookAppointment() {
                     onChange={(e) =>
                       handleInputChange("purpose", e.target.value)
                     }
-                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none appearance-none ${errors.purpose ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-primary'
-                      }`}
+                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none appearance-none ${
+                      errors.purpose
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-transparent focus:border-primary"
+                    }`}
                   >
                     <option value="">Purpose of visit</option>
-                    <option value="Barangay Clearance">Barangay Clearance</option>
-                    <option value="Certificate of Indigency">Certificate of Indigency</option>
+                    <option value="Barangay Clearance">
+                      Barangay Clearance
+                    </option>
+                    <option value="Certificate of Indigency">
+                      Certificate of Indigency
+                    </option>
+                    <option value="Cedula">
+                      Cedula (Community Tax Certificate)
+                    </option>
                     <option value="Business Permit">Business Permit</option>
-                    <option value="Blotter / Mediation">Blotter / Mediation</option>
+                    <option value="Blotter / Mediation">
+                      Blotter / Mediation
+                    </option>
+                    <option value="Others">Others (Please specify)</option>
                   </select>
                 </div>
-                {errors.purpose && <p className="text-red-500 text-sm mt-1">{errors.purpose}</p>}
+                {errors.purpose && (
+                  <p className="text-red-500 text-sm mt-1">{errors.purpose}</p>
+                )}
               </div>
+
+              {formData.purpose === "Others" && (
+                <div>
+                  <div className="relative">
+                    <div className="absolute left-3 top-3">
+                      <svg
+                        className="w-5 h-5 text-muted-foreground"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                        />
+                      </svg>
+                    </div>
+                    <textarea
+                      placeholder="Please specify your purpose..."
+                      value={formData.otherPurpose}
+                      onChange={(e) =>
+                        handleInputChange("otherPurpose", e.target.value)
+                      }
+                      rows={3}
+                      className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${
+                        errors.otherPurpose
+                          ? "border-red-500 focus:border-red-500"
+                          : "border-transparent focus:border-primary"
+                      }`}
+                    />
+                  </div>
+                  {errors.otherPurpose && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.otherPurpose}
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div className="flex gap-4">
                 <button
@@ -460,7 +568,9 @@ export default function BookAppointment() {
                       />
                     </svg>
                     <span className="font-semibold text-foreground">
-                      {timeSlots.find(slot => slot.value === bookingConfirmation.time)?.display || bookingConfirmation.time}
+                      {timeSlots.find(
+                        (slot) => slot.value === bookingConfirmation.time,
+                      )?.display || bookingConfirmation.time}
                     </span>
                   </div>
                 </div>
@@ -488,4 +598,3 @@ export default function BookAppointment() {
     </div>
   );
 }
-

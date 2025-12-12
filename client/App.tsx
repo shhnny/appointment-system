@@ -10,6 +10,7 @@ import Notifications from "./pages/Notifications";
 import Reports from "./pages/Reports";
 import ResidentDashboard from "./pages/ResidentDashboard";
 import Settings from "./pages/Settings";
+import ResidentHelpCentre from "./pages/ResidentHelpCentre";
 
 function App() {
   return (
@@ -26,6 +27,14 @@ function App() {
         <Route path="/resident-dashboard" element={<ResidentDashboard />} />
         <Route path="/book-appointment" element={<BookAppointment />} />
         <Route path="*" element={<NotFound />} />
+
+        <Route path="/resident-dashboard" element={<ResidentDashboard />} />
+        <Route path="/book-appointment" element={<BookAppointment />} />
+
+        {/* ADD THIS LINE RIGHT HERE: */}
+        <Route path="/help-centre" element={<ResidentHelpCentre />} />
+
+        <Route path="/admin-login" element={<AdminLogin />} />
       </Routes>
     </Router>
   );

@@ -13,6 +13,28 @@ export default function ResidentDashboard() {
         </Link>
       </div>
 
+      {/* Help/Support Button - Upper right */}
+      <div className="absolute top-6 right-6 z-10">
+        <Link
+          to="/help-centre"
+          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-primary transition-colors duration-200 font-medium bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm hover:shadow-md border border-gray-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+              clipRule="evenodd"
+            />
+          </svg>
+          Help & Support
+        </Link>
+      </div>
+
       <div className="flex flex-1 min-h-0">
         {/* Left side - Welcome message */}
         <div className="hidden lg:flex lg:flex-1 min-h-0">
@@ -24,8 +46,16 @@ export default function ResidentDashboard() {
                   Hello, Residents!
                 </h1>
                 <p className="text-lg text-white/90">
-                  Access essential barangay services, updates, and records securely.
+                  Access essential barangay services, updates, and records
+                  securely.
                 </p>
+                {/* Additional help info in the welcome section */}
+                <div className="mt-8 pt-6 border-t border-white/20">
+                  <Link
+                    to="/help-centre"
+                    className="inline-flex items-center gap-2 text-white hover:text-white/90 text-sm font-medium underline underline-offset-2"
+                  ></Link>
+                </div>
               </div>
             </div>
           </div>
@@ -43,7 +73,6 @@ export default function ResidentDashboard() {
                   className="w-28 h-28 object-contain"
                 />
               </div>
-
             </div>
           </div>
 
@@ -57,8 +86,9 @@ export default function ResidentDashboard() {
             </p>
           </div>
 
-          {/* Schedule Appointment button */}
-          <div className="w-full max-w-sm">
+          {/* Main CTA Buttons */}
+          <div className="w-full max-w-sm space-y-4">
+            {/* Schedule Appointment button */}
             <Link
               to="/book-appointment"
               className="block w-full px-6 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 text-center"
@@ -72,8 +102,30 @@ export default function ResidentDashboard() {
             <div className="bg-gradient-to-br from-primary to-primary/80 rounded-[2rem] p-6 text-white text-center">
               <h1 className="text-2xl font-bold mb-3">Hello, Residents!</h1>
               <p className="text-white/90 text-sm">
-                Access essential barangay services, updates, and records securely.
+                Access essential barangay services, updates, and records
+                securely.
               </p>
+              {/* Help link in mobile section */}
+              <div className="mt-4 pt-4 border-t border-white/20">
+                <Link
+                  to="/help-centre"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-white/90"
+                >
+                  Need help? Contact Support
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

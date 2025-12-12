@@ -24,7 +24,6 @@ export default function Appointments() {
     const saved = storage.getAppointments();
     setAppointments(saved);
 
-
     const now = new Date();
     const options: Intl.DateTimeFormatOptions = {
       weekday: "long",
@@ -113,7 +112,6 @@ export default function Appointments() {
                     <option>Completed</option>
                     <option>Cancelled</option>
                   </select>
-
                 </div>
               </div>
 
