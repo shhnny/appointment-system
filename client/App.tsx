@@ -11,6 +11,7 @@ import Reports from "./pages/Reports";
 import ResidentDashboard from "./pages/ResidentDashboard";
 import Settings from "./pages/Settings";
 import ResidentHelpCentre from "./pages/ResidentHelpCentre";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
         <Route path="/resident-dashboard" element={<ResidentDashboard />} />
         <Route path="/book-appointment" element={<BookAppointment />} />
         <Route path="*" element={<NotFound />} />
-
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/resident-dashboard" element={<ResidentDashboard />} />
         <Route path="/book-appointment" element={<BookAppointment />} />
 

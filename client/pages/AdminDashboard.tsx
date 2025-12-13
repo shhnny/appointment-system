@@ -350,7 +350,9 @@ export default function AdminDashboard() {
             {/* Main content grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left column - Analytics */}
-              <div className="lg:col-span-3 space-y-6"> {/* Changed from lg:col-span-2 to lg:col-span-3 */}
+              <div className="lg:col-span-3 space-y-6">
+                {" "}
+                {/* Changed from lg:col-span-2 to lg:col-span-3 */}
                 {/* Reports and Analytics */}
                 <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
                   <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
@@ -391,7 +393,6 @@ export default function AdminDashboard() {
                     </table>
                   </div>
                 </div>
-
                 {/* Appointments table - Made wider container */}
                 <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
                   <div className="flex justify-between items-center mb-4">

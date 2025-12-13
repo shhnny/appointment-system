@@ -88,30 +88,8 @@ export default function AdminHeader({ currentDate }: AdminHeaderProps) {
   return (
     <header className="bg-white border-b border-border px-6 py-4">
       <div className="flex items-center justify-between">
-        <div className="flex-1 max-w-md">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full px-4 py-2 bg-muted border border-border rounded-lg focus:outline-none focus:border-primary pl-10"
-            />
-            <svg
-              className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 ml-auto">
+          {" "}
           <button
             onClick={() => navigate("/admin/help")}
             className="p-2 text-muted-foreground hover:text-foreground transition-colors relative"
@@ -131,7 +109,6 @@ export default function AdminHeader({ currentDate }: AdminHeaderProps) {
               />
             </svg>
           </button>
-
           <div className="relative" ref={notificationRef}>
             <button
               onClick={() => setShowNotifications(!showNotifications)}
@@ -147,7 +124,7 @@ export default function AdminHeader({ currentDate }: AdminHeaderProps) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M15 17h5l-5 5v-5zM10.24 8.56a5.97 5.97 0 01-4.66-6.24M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                 />
               </svg>
               {unreadCount > 0 && (
@@ -198,19 +175,21 @@ export default function AdminHeader({ currentDate }: AdminHeaderProps) {
                       <div
                         key={notification.id}
                         onClick={() => handleNotificationClick(notification)}
-                        className={`p-4 border-b border-border cursor-pointer hover:bg-muted/50 transition-colors ${!notification.read ? "bg-blue-50" : ""
-                          }`}
+                        className={`p-4 border-b border-border cursor-pointer hover:bg-muted/50 transition-colors ${
+                          !notification.read ? "bg-blue-50" : ""
+                        }`}
                       >
                         <div className="flex items-start gap-3">
                           <div
-                            className={`w-2 h-2 rounded-full mt-2 ${notification.type === "success"
-                              ? "bg-green-500"
-                              : notification.type === "warning"
-                                ? "bg-yellow-500"
-                                : notification.type === "error"
-                                  ? "bg-red-500"
-                                  : "bg-blue-500"
-                              }`}
+                            className={`w-2 h-2 rounded-full mt-2 ${
+                              notification.type === "success"
+                                ? "bg-green-500"
+                                : notification.type === "warning"
+                                  ? "bg-yellow-500"
+                                  : notification.type === "error"
+                                    ? "bg-red-500"
+                                    : "bg-blue-500"
+                            }`}
                           />
                           <div className="flex-1">
                             <h4 className="font-semibold text-foreground text-sm">
@@ -248,7 +227,6 @@ export default function AdminHeader({ currentDate }: AdminHeaderProps) {
               </div>
             )}
           </div>
-
           <div className="relative" ref={profileRef}>
             <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -274,11 +252,17 @@ export default function AdminHeader({ currentDate }: AdminHeaderProps) {
                       YG
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">Yul Francis G.</h3>
-                      <p className="text-sm text-muted-foreground">Administrator</p>
+                      <h3 className="font-semibold text-foreground">
+                        Yul Francis G.
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Administrator
+                      </p>
                       <div className="flex items-center gap-1 mt-1">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="text-xs text-green-600 font-medium">Active • On Duty</span>
+                        <span className="text-xs text-green-600 font-medium">
+                          Active • On Duty
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -290,8 +274,18 @@ export default function AdminHeader({ currentDate }: AdminHeaderProps) {
                     onClick={handleLogout}
                     className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
                     </svg>
                     <span>Logout</span>
                   </button>

@@ -6,16 +6,21 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     if (!email || !password) {
       setError("Please fill in all fields");
+      setIsLoading(false);
       return;
     }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // TEST MODE: Accept any email and password
     const savedUser = storage.getLogin();
@@ -24,8 +29,23 @@ export default function AdminLogin() {
       storage.saveLogin(email, password);
     }
 
+    localStorage.setItem("admin-last-login", new Date().toISOString());
+
+    setIsLoading(false);
     navigate("/admin-dashboard");
   };
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-lg font-semibold text-foreground">Logging in...</p>
+          <p className="text-muted-foreground mt-1">Please wait</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex bg-white overflow-hidden">
@@ -117,12 +137,24 @@ export default function AdminLogin() {
 
                 {/* Links */}
                 <div className="flex items-center justify-between text-sm">
-                  <a
-                    href="#"
-                    className="text-muted-foreground hover:text-primary"
+                  <Link
+                    to="/forgot-password"
+                    className="text-primary hover:text-primary/80 font-medium transition-colors duration-200 inline-flex items-center gap-1"
                   >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
                     Forgot Password?
-                  </a>
+                  </Link>
                 </div>
 
                 {/* Login button */}

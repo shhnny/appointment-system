@@ -277,10 +277,11 @@ export default function Settings() {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 font-semibold capitalize ${activeTab === tab
-                      ? "text-primary border-b-2 border-primary"
-                      : "text-muted-foreground hover:text-foreground"
-                      }`}
+                    className={`px-4 py-2 font-semibold capitalize ${
+                      activeTab === tab
+                        ? "text-primary border-b-2 border-primary"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
                   >
                     {tab}
                   </button>
@@ -595,14 +596,16 @@ export default function Settings() {
                         </div>
                         <button
                           onClick={toggleEmailNotifications}
-                          className={`w-12 h-6 rounded-full transition-colors ${notifications.email ? "bg-primary" : "bg-gray-300"
-                            }`}
+                          className={`w-12 h-6 rounded-full transition-colors ${
+                            notifications.email ? "bg-primary" : "bg-gray-300"
+                          }`}
                         >
                           <div
-                            className={`w-4 h-4 bg-white rounded-full transition-transform ${notifications.email
-                              ? "transform translate-x-7"
-                              : "transform translate-x-1"
-                              }`}
+                            className={`w-4 h-4 bg-white rounded-full transition-transform ${
+                              notifications.email
+                                ? "transform translate-x-7"
+                                : "transform translate-x-1"
+                            }`}
                           />
                         </button>
                       </div>
@@ -618,14 +621,16 @@ export default function Settings() {
                         </div>
                         <button
                           onClick={toggleSMSNotifications}
-                          className={`w-12 h-6 rounded-full transition-colors ${notifications.sms ? "bg-primary" : "bg-gray-300"
-                            }`}
+                          className={`w-12 h-6 rounded-full transition-colors ${
+                            notifications.sms ? "bg-primary" : "bg-gray-300"
+                          }`}
                         >
                           <div
-                            className={`w-4 h-4 bg-white rounded-full transition-transform ${notifications.sms
-                              ? "transform translate-x-7"
-                              : "transform translate-x-1"
-                              }`}
+                            className={`w-4 h-4 bg-white rounded-full transition-transform ${
+                              notifications.sms
+                                ? "transform translate-x-7"
+                                : "transform translate-x-1"
+                            }`}
                           />
                         </button>
                       </div>
@@ -679,7 +684,14 @@ export default function Settings() {
                         <div className="text-sm space-y-1">
                           <p>
                             <strong>Last Login:</strong>{" "}
-                            {new Date().toLocaleString()}
+                            {(() => {
+                              const loginTime =
+                                localStorage.getItem("admin-last-login");
+                              const date = loginTime
+                                ? new Date(loginTime)
+                                : new Date();
+                              return date.toLocaleString();
+                            })()}
                           </p>
                           <p>
                             <strong>Session Active:</strong> Yes
@@ -719,41 +731,25 @@ export default function Settings() {
                       <div>
                         <span className="font-semibold">Last Login</span>
                         <p className="text-muted-foreground">
-                          {new Date().toLocaleDateString()} -{" "}
-                          {new Date().toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {(() => {
+                            // Get stored login time or use current time as fallback
+                            const loginTime =
+                              localStorage.getItem("admin-last-login");
+                            const date = loginTime
+                              ? new Date(loginTime)
+                              : new Date();
+
+                            return `${date.toLocaleDateString()} - ${date.toLocaleTimeString(
+                              [],
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              },
+                            )}`;
+                          })()}
                         </p>
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                {/* Quick Actions */}
-                <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
-                  <h3 className="text-lg font-bold text-foreground mb-4">
-                    Quick Actions
-                  </h3>
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => setActiveTab("appointments")}
-                      className="w-full px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 text-sm font-semibold text-left"
-                    >
-                      📅 Manage Appointments
-                    </button>
-                    <button
-                      onClick={() => setActiveTab("notifications")}
-                      className="w-full px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 text-sm font-semibold text-left"
-                    >
-                      🔔 Notification Settings
-                    </button>
-                    <button
-                      onClick={changeAdminPassword}
-                      className="w-full px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 text-sm font-semibold text-left"
-                    >
-                      🔒 Change Password
-                    </button>
                   </div>
                 </div>
               </div>

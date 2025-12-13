@@ -40,6 +40,20 @@ export default function BookAppointment() {
     otherPurpose?: string;
   }>({});
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-lg font-semibold text-foreground">Submitting...</p>
+          <p className="text-muted-foreground mt-1">Please wait</p>
+        </div>
+      </div>
+    );
+  }
+
   // Get minimum date (tomorrow)
   const getMinDate = () => {
     const tomorrow = new Date();
@@ -87,7 +101,7 @@ export default function BookAppointment() {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const newErrors: typeof errors = {};
 
     if (step === 1) {
@@ -102,6 +116,7 @@ export default function BookAppointment() {
 
       if (Object.keys(newErrors).length === 0) {
         setErrors({});
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setStep(2);
       } else {
         setErrors(newErrors);
@@ -117,6 +132,9 @@ export default function BookAppointment() {
 
       if (Object.keys(newErrors).length === 0) {
         setErrors({});
+        setIsLoading(true);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         setBookingConfirmation({
           date: formData.date,
           time: formData.time,
@@ -125,21 +143,18 @@ export default function BookAppointment() {
         // FIX: Save the appointment immediately when moving to step 3
         const appointment = {
           id: `${Date.now().toString()}-${Math.random().toString(36).slice(2, 9)}`,
-          status: "pending",
+          status: "Pending",
           fullName: formData.fullName,
           email: formData.email,
           phone: formData.phone,
           date: formData.date,
           time: formData.time,
-          // Include otherPurpose if "Others" is selected
-          purpose:
-            formData.purpose === "Others"
-              ? `Others: ${formData.otherPurpose}`
-              : formData.purpose,
+          purpose: formData.purpose,
         };
 
         storage.saveAppointment(appointment);
 
+        setIsLoading(false);
         setStep(3);
       } else {
         setErrors(newErrors);
@@ -460,46 +475,6 @@ export default function BookAppointment() {
                   <p className="text-red-500 text-sm mt-1">{errors.purpose}</p>
                 )}
               </div>
-
-              {formData.purpose === "Others" && (
-                <div>
-                  <div className="relative">
-                    <div className="absolute left-3 top-3">
-                      <svg
-                        className="w-5 h-5 text-muted-foreground"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-                        />
-                      </svg>
-                    </div>
-                    <textarea
-                      placeholder="Please specify your purpose..."
-                      value={formData.otherPurpose}
-                      onChange={(e) =>
-                        handleInputChange("otherPurpose", e.target.value)
-                      }
-                      rows={3}
-                      className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${
-                        errors.otherPurpose
-                          ? "border-red-500 focus:border-red-500"
-                          : "border-transparent focus:border-primary"
-                      }`}
-                    />
-                  </div>
-                  {errors.otherPurpose && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.otherPurpose}
-                    </p>
-                  )}
-                </div>
-              )}
 
               <div className="flex gap-4">
                 <button
