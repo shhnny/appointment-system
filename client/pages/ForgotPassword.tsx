@@ -101,11 +101,11 @@ export default function ForgotPassword() {
         <div className="mb-8">
           <Link
             to="/admin-login"
-            className="inline-flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-200 font-medium"
+            className="inline-flex items-center gap-2 bg-white px-4 py-2.5 rounded-lg text-gray-700 hover:text-primary transition-all duration-200 font-medium shadow-md hover:shadow-lg"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-2"
+              className="h-4 w-4"
               viewBox="0 0 20 20"
               fill="currentColor"
             >

@@ -150,7 +150,10 @@ export default function BookAppointment() {
           phone: formData.phone,
           date: formData.date,
           time: formData.time,
-          purpose: formData.purpose,
+          purpose:
+            formData.purpose === "Others"
+              ? formData.otherPurpose
+              : formData.purpose,
         };
 
         storage.saveAppointment(appointment);
@@ -476,6 +479,47 @@ export default function BookAppointment() {
                   <p className="text-red-500 text-sm mt-1">{errors.purpose}</p>
                 )}
               </div>
+
+              {/* Other Purpose Input - Only show when "Others" is selected */}
+              {formData.purpose === "Others" && (
+                <div>
+                  <div className="relative">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                      <svg
+                        className="w-5 h-5 text-muted-foreground"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Please specify your purpose"
+                      value={formData.otherPurpose}
+                      onChange={(e) =>
+                        handleInputChange("otherPurpose", e.target.value)
+                      }
+                      className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${
+                        errors.otherPurpose
+                          ? "border-red-500 focus:border-red-500"
+                          : "border-transparent focus:border-primary"
+                      }`}
+                    />
+                  </div>
+                  {errors.otherPurpose && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.otherPurpose}
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div className="flex gap-4">
                 <button
