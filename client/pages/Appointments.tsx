@@ -446,16 +446,17 @@ export default function Appointments() {
               </div>
 
               {/* Actions */}
+              {/* Actions */}
               <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => {
                     updateStatus(selectedAppointment.id, "Confirmed");
                     closeModal();
                   }}
-                  className="flex-1 px-4 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 px-3 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -474,10 +475,10 @@ export default function Appointments() {
                     updateStatus(selectedAppointment.id, "Completed");
                     closeModal();
                   }}
-                  className="flex-1 px-4 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 px-3 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -496,10 +497,10 @@ export default function Appointments() {
                     updateStatus(selectedAppointment.id, "Cancelled");
                     closeModal();
                   }}
-                  className="flex-1 px-4 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 px-2 py-1 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
