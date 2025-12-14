@@ -19,8 +19,8 @@ export default function AdminSidebar() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
             <img
-              src="/assets/JP RIZAL.png"
-              alt="Barangay JP Rizal Logo"
+              src="/assets/Logo 2.png"
+              alt="Barangay Logo 2 Logo"
               className="w-full h-full object-cover"
             />
           </div>

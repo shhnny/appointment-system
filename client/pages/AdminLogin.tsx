@@ -22,7 +22,6 @@ export default function AdminLogin() {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // TEST MODE: Accept any email and password
     const savedUser = storage.getLogin();
 
     if (!savedUser) {
@@ -53,9 +52,22 @@ export default function AdminLogin() {
       <div className="absolute top-6 left-6 z-10">
         <Link
           to="/"
-          className="inline-flex items-center text-sm text-white hover:text-gray-200 transition-colors duration-200 font-medium"
+          className="inline-flex items-center justify-center w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full text-white hover:bg-white/20 transition-all duration-200 shadow-md hover:shadow-lg"
+          title="Home"
         >
-          ← Back to Home
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            />
+          </svg>
         </Link>
       </div>
 
@@ -85,8 +97,8 @@ export default function AdminLogin() {
             <div className="flex flex-col items-center justify-center gap-4 mb-6">
               <div className="w-32 h-32 flex items-center justify-center">
                 <img
-                  src="/assets/JP RIZAL.png"
-                  alt="Barangay JP Rizal Logo"
+                  src="/assets/Logo.png"
+                  alt="Barangay Logo"
                   className="w-28 h-28 object-contain"
                 />
               </div>
@@ -96,13 +108,6 @@ export default function AdminLogin() {
                 </h2>
                 <p className="text-muted-foreground mt-1">Appointment System</p>
               </div>
-            </div>
-          </div>
-
-          {/* Test mode indicator */}
-          <div className="w-full max-w-sm mb-6">
-            <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-2 rounded-lg text-sm text-center">
-              <strong>TEST MODE:</strong> Any email and password will work
             </div>
           </div>
 

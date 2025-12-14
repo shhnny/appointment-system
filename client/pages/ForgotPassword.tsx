@@ -139,7 +139,7 @@ export default function ForgotPassword() {
                 />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">
+            <h1 className="text-2xl font-bold text-white mb-2">
               {step === "request" && "Reset Your Password"}
               {step === "verify" && "Verify Your Identity"}
               {step === "reset" && "Create New Password"}
@@ -153,7 +153,7 @@ export default function ForgotPassword() {
           </div>
 
           {/* Progress Indicator */}
-          <div className="px-8 pt-6">
+          <div className="px-8 pt-6 ">
             <div className="flex items-center justify-center mb-8">
               <div className="flex items-center">
                 {/* Step 1 */}

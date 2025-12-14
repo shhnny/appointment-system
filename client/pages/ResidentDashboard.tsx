@@ -7,9 +7,22 @@ export default function ResidentDashboard() {
       <div className="absolute top-6 left-6 z-10">
         <Link
           to="/"
-          className="inline-flex items-center text-sm text-white hover:text-gray-200 transition-colors duration-200 font-medium"
+          className="inline-flex items-center justify-center w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full text-white hover:bg-white/20 transition-all duration-200 shadow-md hover:shadow-lg"
+          title="Home"
         >
-          ← Back to Home
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            />
+          </svg>
         </Link>
       </div>
 
@@ -50,7 +63,7 @@ export default function ResidentDashboard() {
                   securely.
                 </p>
                 {/* Additional help info in the welcome section */}
-                <div className="mt-8 pt-6 border-t border-white/20">
+                <div className="mt-8 pt-6">
                   <Link
                     to="/help-centre"
                     className="inline-flex items-center gap-2 text-white hover:text-white/90 text-sm font-medium underline underline-offset-2"
@@ -68,9 +81,9 @@ export default function ResidentDashboard() {
             <div className="flex flex-col items-center justify-center gap-4 mb-6">
               <div className="w-90 h-10 flex items-center justify-center">
                 <img
-                  src="/assets/JP RIZAL.png"
-                  alt="Barangay JP Rizal Logo"
-                  className="w-28 h-28 object-contain"
+                  src="/assets/Logo.png"
+                  alt="Barangay Logo Logo"
+                  className="w-32 h-32 object-contain"
                 />
               </div>
             </div>
@@ -106,7 +119,7 @@ export default function ResidentDashboard() {
                 securely.
               </p>
               {/* Help link in mobile section */}
-              <div className="mt-4 pt-4 border-t border-white/20">
+              <div className="mt-4 pt-4">
                 <Link
                   to="/help-centre"
                   className="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-white/90"

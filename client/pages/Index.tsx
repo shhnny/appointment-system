@@ -31,8 +31,8 @@ export default function Index() {
                 {" "}
                 {/* Bigger logo container */}
                 <img
-                  src="/assets/JP RIZAL.png"
-                  alt="Barangay JP Rizal Logo"
+                  src="/assets/Logo.png"
+                  alt="Barangay Logo Logo"
                   className="w-30 h-34 object-contain" /* Bigger logo */
                 />
               </div>

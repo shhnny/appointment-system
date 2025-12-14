@@ -116,6 +116,7 @@ export default function BookAppointment() {
 
       if (Object.keys(newErrors).length === 0) {
         setErrors({});
+
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setStep(2);
       } else {
@@ -198,8 +199,8 @@ export default function BookAppointment() {
           >
             <div className="w-20 h-20 flex items-center justify-center">
               <img
-                src="/assets/JP RIZAL.png"
-                alt="Barangay JP Rizal Logo"
+                src="/assets/Logo.png"
+                alt="Barangay Logo Logo"
                 className="w-full h-full object-cover"
               />
             </div>
