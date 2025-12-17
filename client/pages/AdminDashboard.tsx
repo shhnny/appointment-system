@@ -1,18 +1,8 @@
 import AdminHeader from "@/components/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar";
-import { storage } from "@/lib/storage";
+import { Appointment } from "@/interfaces/appointment.interface";
+import { API_BASE_URL } from "@/services/api";
 import { useEffect, useState } from "react";
-
-interface Appointment {
-  id: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  date: string;
-  time: string;
-  purpose: string;
-  status: string;
-}
 
 interface ServiceDemand {
   rank: string;
@@ -26,46 +16,27 @@ export default function AdminDashboard() {
   const [currentDate, setCurrentDate] = useState("");
   const [currentGreeting, setCurrentGreeting] = useState("");
 
-  // Initialize or reset all data to zero/empty
-  const resetData = () => {
-    const emptyAppointments: Appointment[] = [];
-    const emptyServiceDemand: ServiceDemand[] = [
-      {
-        rank: "1. Barangay Clearance",
-        count: 0,
-        percent: "0%",
-      },
-      {
-        rank: "2. Certificate of Indigency",
-        count: 0,
-        percent: "0%",
-      },
-      {
-        rank: "3. Blotter / Mediation",
-        count: 0,
-        percent: "0%",
-      },
-    ];
-
-    setAppointments(emptyAppointments);
-    setServiceDemand(emptyServiceDemand);
-
-    // Optionally clear storage as well
-    storage.clearAll();
-  };
-
-  // Load initial data - sort by newest first
   useEffect(() => {
-    const savedAppointments = storage.getAppointments();
-    // Sort appointments by date/time in descending order (newest first)
-    const sortedAppointments = (savedAppointments || []).sort((a, b) => {
-      const dateA = new Date(`${a.date} ${a.time}`).getTime();
-      const dateB = new Date(`${b.date} ${b.time}`).getTime();
-      return dateB - dateA; // Newest first
-    });
-    setAppointments(sortedAppointments);
+    async function fetchAppointments() {
+      const response = await fetch(`${API_BASE_URL}/appointments`);
+      const data = await response.json();
 
-    // Set current date
+      console.log("data: ", data)
+      const sortedAppointments = (data.data || []).sort((a, b) => {
+        const dateA = new Date(`${a.date} ${a.time}`).getTime();
+        const dateB = new Date(`${b.date} ${b.time}`).getTime();
+        return dateB - dateA;
+      });
+
+      setAppointments(sortedAppointments);
+      calculateServiceDemand(sortedAppointments);
+    }
+
+    fetchAppointments();
+  }, []);
+
+
+  useEffect(() => {
     const now = new Date();
     const options: Intl.DateTimeFormatOptions = {
       weekday: "long",
@@ -83,12 +54,9 @@ export default function AdminDashboard() {
     } else {
       setCurrentGreeting("Good Evening");
     }
-
-    // Calculate service demand from actual appointments
-    calculateServiceDemand(sortedAppointments);
   }, []);
 
-  // Calculate service demand based on actual appointments
+
   const calculateServiceDemand = (appts: Appointment[]) => {
     if (appts.length === 0) {
       setServiceDemand([
@@ -101,12 +69,12 @@ export default function AdminDashboard() {
 
     const serviceCount: { [key: string]: number } = {};
 
-    // Count each service type
+
     appts.forEach((appt) => {
-      serviceCount[appt.purpose] = (serviceCount[appt.purpose] || 0) + 1;
+      serviceCount[appt.service.service_name] = (serviceCount[appt.service.service_name] || 0) + 1;
     });
 
-    // Convert to array and sort by count
+
     const sortedServices = Object.entries(serviceCount)
       .map(([purpose, count]) => ({
         purpose,
@@ -115,7 +83,7 @@ export default function AdminDashboard() {
       .sort((a, b) => b.count - a.count)
       .slice(0, 3); // Top 3
 
-    // Calculate percentages
+
     const total = appts.length;
     const demandData = sortedServices.map((service, index) => ({
       rank: `${index + 1}. ${service.purpose}`,
@@ -124,7 +92,7 @@ export default function AdminDashboard() {
         total > 0 ? `${((service.count / total) * 100).toFixed(1)}%` : "0%",
     }));
 
-    // Fill remaining slots with zero data if needed
+
     while (demandData.length < 3) {
       const defaultServices = [
         "Barangay Clearance",
@@ -141,78 +109,24 @@ export default function AdminDashboard() {
     setServiceDemand(demandData);
   };
 
-  // Update service demand when appointments change
+
   useEffect(() => {
     calculateServiceDemand(appointments);
   }, [appointments]);
 
-  // Add sample data for testing (optional) - new appointments will be added at the top
-  const addSampleData = () => {
-    const sampleAppointments: Appointment[] = [
-      {
-        id: "1",
-        fullName: "Juan Dela Cruz",
-        email: "juan@email.com",
-        phone: "09123456789",
-        date: "2024-01-15",
-        time: "09:00 AM",
-        purpose: "Barangay Clearance",
-        status: "Pending",
-      },
-      {
-        id: "2",
-        fullName: "Maria Santos",
-        email: "maria@email.com",
-        phone: "09123456780",
-        date: "2024-01-16",
-        time: "10:30 AM",
-        purpose: "Certificate of Indigency",
-        status: "Confirmed",
-      },
-      {
-        id: "3",
-        fullName: "Pedro Reyes",
-        email: "pedro@email.com",
-        phone: "09123456781",
-        date: "2024-01-17",
-        time: "02:00 PM",
-        purpose: "Blotter / Mediation",
-        status: "Completed",
-      },
-    ];
-
-    // Add new appointments
-    const updatedAppointments = [...sampleAppointments, ...appointments];
-    setAppointments(updatedAppointments);
-
-    // Update storage
-    storage.clearAll();
-    updatedAppointments.forEach((appt) => storage.saveAppointment(appt));
-  };
-
-  // Update appointment status
   const updateAppointmentStatus = (id: string, newStatus: string) => {
     const updatedAppointments = appointments.map((appt) =>
-      appt.id === id ? { ...appt, status: newStatus } : appt,
+      appt.reference_no === id ? { ...appt, status: { status_name: newStatus } } : appt,
     );
     setAppointments(updatedAppointments);
-
-    // Update in storage as well
-    storage.clearAll();
-    updatedAppointments.forEach((appt) => storage.saveAppointment(appt));
   };
 
-  // Delete an appointment
   const deleteAppointment = (id: string) => {
-    const filteredAppointments = appointments.filter((appt) => appt.id !== id);
+    const filteredAppointments = appointments.filter((appt) => appt.reference_no !== id);
     setAppointments(filteredAppointments);
-
-    // Update storage
-    storage.clearAll();
-    filteredAppointments.forEach((appt) => storage.saveAppointment(appt));
   };
 
-  // Get status badge class
+
   const getStatusClass = (status: string) => {
     switch (status) {
       case "Pending":
@@ -232,39 +146,19 @@ export default function AdminDashboard() {
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <AdminSidebar />
-
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
         <AdminHeader currentDate={currentDate} />
 
-        {/* Content */}
         <main className="flex-1 overflow-auto transition-all duration-75">
           <div className="p-6">
-            {/* Welcome section */}
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-foreground">
-                {currentGreeting} Yul!
+                {currentGreeting}!
               </h1>
               <p className="text-muted-foreground">
                 {currentDate || "Loading date..."}
               </p>
-            </div>
-
-            {/* Control buttons for testing */}
-            <div className="flex gap-2 mb-4">
-              <button
-                onClick={resetData}
-                className="px-4 py-2 bg-red-800 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors"
-              >
-                Reset All Data
-              </button>
-              <button
-                onClick={addSampleData}
-                className="px-4 py-2 bg-blue-800 text-white rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
-              >
-                Add Sample Data
-              </button>
             </div>
 
             {/* Stats cards */}
@@ -295,7 +189,7 @@ export default function AdminDashboard() {
                     </p>
                     <p className="text-3xl font-bold text-yellow-500 mt-2">
                       {
-                        appointments.filter((a) => a.status === "Pending")
+                        appointments.filter((a) => a.status.status_name === "Pending")
                           .length
                       }
                     </p>
@@ -315,7 +209,7 @@ export default function AdminDashboard() {
                     </p>
                     <p className="text-3xl font-bold text-green-500 mt-2">
                       {
-                        appointments.filter((a) => a.status === "Confirmed")
+                        appointments.filter((a) => a.status.status_name === "Confirmed")
                           .length
                       }
                     </p>
@@ -335,7 +229,7 @@ export default function AdminDashboard() {
                     </p>
                     <p className="text-3xl font-bold text-blue-500 mt-2">
                       {
-                        appointments.filter((a) => a.status === "Completed")
+                        appointments.filter((a) => a.status.status_name === "Completed")
                           .length
                       }
                     </p>
@@ -347,19 +241,17 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Main content grid */}
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left column - Analytics */}
               <div className="lg:col-span-3 space-y-6">
                 {" "}
-                {/* Changed from lg:col-span-2 to lg:col-span-3 */}
-                {/* Reports and Analytics */}
                 <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
                   <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
                     <span></span>Reports and Analytics
                   </h2>
 
-                  {/* Service Demand Ranking */}
+
                   <div className="mb-6">
                     <h3 className="font-semibold text-foreground mb-4">
                       Service Demand Ranking
@@ -393,7 +285,7 @@ export default function AdminDashboard() {
                     </table>
                   </div>
                 </div>
-                {/* Appointments table - Made wider container */}
+
                 <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-semibold text-foreground">
@@ -437,33 +329,32 @@ export default function AdminDashboard() {
                               colSpan={6}
                               className="py-8 px-3 text-center text-muted-foreground"
                             >
-                              No appointments yet. Click "Add Sample Data" to
-                              see demo data.
+                              No appointments yet.
                             </td>
                           </tr>
                         ) : (
                           appointments.slice(0, 10).map((item) => (
                             <tr
-                              key={item.id}
+                              key={item.reference_no}
                               className="border-b border-border hover:bg-muted"
                             >
                               <td className="py-3 px-3 text-foreground">
-                                {item.fullName}
+                                {item.resident.full_name}
                               </td>
                               <td className="py-3 px-3 text-foreground">
-                                {item.purpose}
+                                {item.service.service_name}
                               </td>
                               <td className="py-3 px-3 text-foreground">
-                                {item.date} @ {item.time}
+                                {item.time_slot.slot_date} @ {item.time_slot.start_time}
                               </td>
                               <td className="py-3 px-3 text-foreground">
-                                {item.phone}
+                                {item.resident.phone_number}
                               </td>
                               <td className="py-3 px-3">
                                 <span
-                                  className={`${getStatusClass(item.status)} px-3 py-1 rounded-full text-xs font-semibold`}
+                                  className={`${getStatusClass(item.status.status_name)} px-3 py-1 rounded-full text-xs font-semibold`}
                                 >
-                                  {item.status}
+                                  {item.status.status_name}
                                 </span>
                               </td>
                               <td className="py-3 px-3">
@@ -471,7 +362,7 @@ export default function AdminDashboard() {
                                   <button
                                     onClick={() =>
                                       updateAppointmentStatus(
-                                        item.id,
+                                        item.reference_no,
                                         "Confirmed",
                                       )
                                     }
@@ -480,7 +371,7 @@ export default function AdminDashboard() {
                                     Approve
                                   </button>
                                   <button
-                                    onClick={() => deleteAppointment(item.id)}
+                                    onClick={() => deleteAppointment(item.reference_no)}
                                     className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                                   >
                                     Delete
@@ -497,7 +388,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Footer */}
+
             <div className="mt-8 text-center text-xs text-muted-foreground py-4 border-t border-border">
               Barangay Information and Service Management System © 2025 - All
               Rights Reserved.

@@ -1,18 +1,8 @@
 import AdminHeader from "@/components/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar";
-import { storage } from "@/lib/storage";
+import { Appointment } from "@/interfaces/appointment.interface";
+import { API_BASE_URL } from "@/services/api";
 import { useEffect, useState } from "react";
-
-interface Appointment {
-  id: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  date: string;
-  time: string;
-  purpose: string;
-  status: string;
-}
 
 export default function Appointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -24,9 +14,18 @@ export default function Appointments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const saved = storage.getAppointments();
-    setAppointments(saved);
+    async function fetchAppointments() {
+      const response = await fetch(`${API_BASE_URL}/appointments`);
+      const data = await response.json();
 
+      console.log("data: ", data)
+      setAppointments(data.data);
+    }
+
+    fetchAppointments();
+  }, []);
+
+  useEffect(() => {
     const now = new Date();
     const options: Intl.DateTimeFormatOptions = {
       weekday: "long",
@@ -46,12 +45,8 @@ export default function Appointments() {
     }
   }, []);
 
-  const updateStatus = (id: string, newStatus: string) => {
-    const updated = appointments.map((app) =>
-      app.id === id ? { ...app, status: newStatus } : app,
-    );
-    setAppointments(updated);
-    storage.saveAppointments(updated);
+  const updateStatus = (id: number, newStatus: string) => {
+
   };
 
   const handleViewAppointment = (appointment: Appointment) => {
@@ -67,7 +62,7 @@ export default function Appointments() {
   const filtered =
     filterStatus === "All Status"
       ? appointments
-      : appointments.filter((app) => app.status === filterStatus);
+      : appointments.filter((app) => app.status.status_name === filterStatus);
 
   // Function to format date for display
   const formatDate = (dateString: string) => {
@@ -100,7 +95,7 @@ export default function Appointments() {
           <div className="p-6">
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-foreground">
-                {currentGreeting} Yul!
+                {currentGreeting}!
               </h1>
               <p className="text-muted-foreground">
                 {currentDate || "Loading date..."}
@@ -117,7 +112,7 @@ export default function Appointments() {
                     <span className="px-3 py-1 bg-yellow-500 text-white rounded-full text-sm font-semibold">
                       Pending:{" "}
                       {
-                        appointments.filter((a) => a.status === "Pending")
+                        appointments.filter((a) => a.status.status_name === "Pending")
                           .length
                       }
                     </span>
@@ -189,16 +184,16 @@ export default function Appointments() {
                           item.status?.toString().trim() || "Pending";
                         const finalStatus =
                           normalizedStatus === "pending" ||
-                          normalizedStatus === "Pending"
+                            normalizedStatus === "Pending"
                             ? "Pending"
                             : normalizedStatus === "confirmed" ||
-                                normalizedStatus === "Confirmed"
+                              normalizedStatus === "Confirmed"
                               ? "Confirmed"
                               : normalizedStatus === "completed" ||
-                                  normalizedStatus === "Completed"
+                                normalizedStatus === "Completed"
                                 ? "Completed"
                                 : normalizedStatus === "cancelled" ||
-                                    normalizedStatus === "Cancelled"
+                                  normalizedStatus === "Cancelled"
                                   ? "Cancelled"
                                   : "Pending"; // Default to Pending
 
@@ -213,14 +208,14 @@ export default function Appointments() {
 
                         return (
                           <tr
-                            key={item.id}
+                            key={item.appointment_id}
                             className="border-b border-border hover:bg-gray-50 transition-colors"
                           >
                             <td className="py-4 px-6">
                               <select
-                                value={item.status}
+                                value={item.status.status_name}
                                 onChange={(e) =>
-                                  updateStatus(item.id, e.target.value)
+                                  updateStatus(item.appointment_id, e.target.value)
                                 }
                                 className={`${statusColor} text-white px-3 py-1 rounded-full text-xs font-semibold border-0 cursor-pointer`}
                               >
@@ -231,16 +226,16 @@ export default function Appointments() {
                               </select>
                             </td>
                             <td className="py-4 px-6 text-sm text-foreground">
-                              {item.date} @ {item.time}
+                              {item.time_slot.slot_date} @ {item.time_slot.start_time}
                             </td>
                             <td className="py-4 px-6 text-sm text-foreground font-medium">
-                              {item.fullName}
+                              {item.resident.full_name}
                             </td>
                             <td className="py-4 px-6 text-sm text-foreground">
-                              {item.purpose}
+                              {item.service.service_name}
                             </td>
                             <td className="py-4 px-6 text-sm text-foreground font-semibold">
-                              #{item.id.slice(-4)}
+                              {item.reference_no}
                             </td>
                             <td className="py-4 px-6 text-sm">
                               <button
@@ -276,7 +271,7 @@ export default function Appointments() {
               <div>
                 <h3 className="text-xl font-bold">Appointment Details</h3>
                 <p className="text-white/90 text-sm mt-1">
-                  Reference: #{selectedAppointment.id.slice(-8)}
+                  Reference: #{selectedAppointment.reference_no}
                 </p>
               </div>
               <button
@@ -313,19 +308,19 @@ export default function Appointments() {
                       <div>
                         <p className="text-sm text-gray-600">Full Name</p>
                         <p className="font-medium">
-                          {selectedAppointment.fullName}
+                          {selectedAppointment.resident.full_name}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Email Address</p>
                         <p className="font-medium">
-                          {selectedAppointment.email}
+                          {selectedAppointment.resident.email_address}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Phone Number</p>
                         <p className="font-medium">
-                          {selectedAppointment.phone}
+                          {selectedAppointment.resident.phone_number}
                         </p>
                       </div>
                     </div>
@@ -351,7 +346,7 @@ export default function Appointments() {
                     <div>
                       <p className="text-sm text-gray-600">Purpose</p>
                       <p className="font-medium">
-                        {selectedAppointment.purpose}
+                        {selectedAppointment.service.service_name}
                       </p>
                     </div>
                   </div>
@@ -380,29 +375,28 @@ export default function Appointments() {
                       <div>
                         <p className="text-sm text-gray-600">Date</p>
                         <p className="font-medium">
-                          {formatDate(selectedAppointment.date)}
+                          {formatDate(selectedAppointment.time_slot.slot_date)}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Time</p>
                         <p className="font-medium">
-                          {formatTime(selectedAppointment.time)}
+                          {formatTime(selectedAppointment.time_slot.start_time)}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Status</p>
                         <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                            selectedAppointment.status === "Pending"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : selectedAppointment.status === "Confirmed"
-                                ? "bg-green-100 text-green-800"
-                                : selectedAppointment.status === "Completed"
-                                  ? "bg-blue-100 text-blue-800"
-                                  : "bg-red-100 text-red-800"
-                          }`}
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${selectedAppointment.status.status_name === "Pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : selectedAppointment.status.status_name === "Confirmed"
+                              ? "bg-green-100 text-green-800"
+                              : selectedAppointment.status.status_name === "Completed"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
                         >
-                          {selectedAppointment.status}
+                          {selectedAppointment.status.status_name}
                         </span>
                       </div>
                     </div>
@@ -429,14 +423,14 @@ export default function Appointments() {
                       <div>
                         <p className="text-sm text-gray-600">Appointment ID</p>
                         <p className="font-mono font-medium">
-                          {selectedAppointment.id}
+                          {selectedAppointment.appointment_id}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Created</p>
                         <p className="font-medium">
                           {new Date(
-                            selectedAppointment.id.split("-")[0],
+                            selectedAppointment.created_at,
                           ).toLocaleDateString()}
                         </p>
                       </div>
@@ -449,7 +443,7 @@ export default function Appointments() {
               <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => {
-                    updateStatus(selectedAppointment.id, "Confirmed");
+                    updateStatus(selectedAppointment.appointment_id, "Confirmed");
                     closeModal();
                   }}
                   className="flex-1 px-4 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
@@ -471,7 +465,7 @@ export default function Appointments() {
                 </button>
                 <button
                   onClick={() => {
-                    updateStatus(selectedAppointment.id, "Completed");
+                    updateStatus(selectedAppointment.appointment_id, "Completed");
                     closeModal();
                   }}
                   className="flex-1 px-4 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
@@ -493,7 +487,7 @@ export default function Appointments() {
                 </button>
                 <button
                   onClick={() => {
-                    updateStatus(selectedAppointment.id, "Cancelled");
+                    updateStatus(selectedAppointment.appointment_id, "Cancelled");
                     closeModal();
                   }}
                   className="flex-1 px-4 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
@@ -527,7 +521,7 @@ export default function Appointments() {
               <button
                 onClick={() => {
                   // You can add email functionality here
-                  alert(`Email sent to ${selectedAppointment.email}`);
+                  alert(`Email sent to ${selectedAppointment.resident.email_address}`);
                 }}
                 className="px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors"
               >
