@@ -11,10 +11,18 @@ export const getTimeSlots = async (): Promise<{
 
 export const createTimeSlot = async (
   params: TimeSlotParam,
-): Promise<{ data: TimeSlot; success: boolean; message: string }> => {
+): Promise<{
+  data: TimeSlot;
+  success: boolean;
+  message: string;
+  errors?: any;
+}> => {
   const response = await fetch(`${API_BASE_URL}/time-slots`, {
     method: "POST",
-    headers: { Accept: "application/json" },
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
 
     body: JSON.stringify(params),
   });

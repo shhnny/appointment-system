@@ -3,8 +3,10 @@ import AdminHeader from "@/components/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar";
 import { TimeSlotParam } from "@/interfaces/time_slot.interface";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateSlot() {
+  const navigate = useNavigate();
   const [error, setError] = useState("");
   const [slot, setSlot] = useState<TimeSlotParam>({
     slot_date: undefined,
@@ -17,7 +19,14 @@ export default function CreateSlot() {
   async function createSlot() {
     try {
       const data = await createTimeSlot(slot);
-      console.log("data: ", data);
+      if (data.errors) {
+        setError(data.message);
+        return;
+      }
+
+      if (data.success) {
+        navigate("/admin/time-slots");
+      }
     } catch (error) {
       setError(error.message);
     }
