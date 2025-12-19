@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { API_BASE_URL } from "../services/api";
 import { getPublicTimeSlots } from "@/api/requests/time_slot";
 import { TimeSlot } from "@/interfaces/time_slot.interface";
-import { readableDate } from "@/lib/utils";
+import { formatTime12h, readableDate } from "@/lib/utils";
 
 interface FormData {
   fullName: string;
@@ -323,7 +323,8 @@ export default function BookAppointment() {
                   >
                     <div>{readableDate(item.slot_date)}</div>
                     <div className="text-sm">
-                      {item.start_time}-{item.end_time}
+                      {formatTime12h(item.start_time)}-
+                      {formatTime12h(item.end_time)}
                     </div>
                     <div className="text-sm">
                       Available slots: {item.available_slots}
@@ -336,8 +337,9 @@ export default function BookAppointment() {
 
           {timeSlot && (
             <div className="mb-4 font-semibold">
-              Slot: {timeSlot.slot_date} ({timeSlot.start_time}-
-              {timeSlot.end_time})
+              Slot: {readableDate(timeSlot.slot_date)} (
+              {formatTime12h(timeSlot.start_time)}-
+              {formatTime12h(timeSlot.end_time)})
             </div>
           )}
 
@@ -694,7 +696,7 @@ export default function BookAppointment() {
                       />
                     </svg>
                     <span className="font-semibold text-foreground">
-                      {bookingConfirmation.time}
+                      {formatTime12h(bookingConfirmation.time)}
                     </span>
                   </div>
 

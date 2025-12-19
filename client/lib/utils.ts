@@ -17,3 +17,16 @@ export function readableDate(dateString: string) {
 
   return readableDate;
 }
+
+export function formatTime12h(time24h: string): string {
+  const [hours, minutes] = time24h.split(":");
+  const date = new Date();
+  date.setHours(parseInt(hours, 10));
+  date.setMinutes(parseInt(minutes, 10));
+
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  }).format(date);
+}
