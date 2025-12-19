@@ -4,6 +4,8 @@ import { API_BASE_URL } from "../services/api";
 import { getPublicTimeSlots } from "@/api/requests/time_slot";
 import { TimeSlot } from "@/interfaces/time_slot.interface";
 import { formatTime12h, readableDate } from "@/lib/utils";
+import { createAppointment } from "@/api/requests/appointment";
+import { createResident } from "@/api/requests/resident";
 
 interface FormData {
   fullName: string;
@@ -123,21 +125,14 @@ export default function BookAppointment() {
     }
   };
 
-  const createResident = async () => {
+  const createResidentUser = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/residents`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          full_name: formData.fullName,
-          email_address: formData.email,
-          phone_number: formData.phone,
-        }),
+      const data = await createResident({
+        full_name: formData.fullName,
+        email_address: formData.email,
+        phone_number: formData.phone,
       });
-      const data = await response.json();
+
       setResidentId(data.data.resident_id);
     } catch (error) {
       console.error("Failed to create resident:", error);
@@ -160,7 +155,7 @@ export default function BookAppointment() {
 
       if (Object.keys(newErrors).length === 0) {
         setErrors({});
-        createResident();
+        createResidentUser();
         setStep(2);
       } else {
         setErrors(newErrors);
@@ -203,16 +198,7 @@ export default function BookAppointment() {
         purpose_notes: "", // Add notes if you have a field for it
       };
 
-      const response = await fetch(`${API_BASE_URL}/appointments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(appointmentData),
-      });
-
-      const data = await response.json();
+      const data = await createAppointment(appointmentData);
 
       console.log("data: ", data);
 
