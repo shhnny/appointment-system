@@ -23,12 +23,11 @@ export default function CreateSlot() {
         setError(data.message);
         return;
       }
-
       if (data.success) {
         navigate("/admin/time-slots");
       }
     } catch (error) {
-      setError(error.message);
+      setError(error.response?.data?.message || error.message);
     }
   }
 

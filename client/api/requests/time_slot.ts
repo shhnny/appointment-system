@@ -29,3 +29,11 @@ export const createTimeSlot = async (
 
   return await response.json();
 };
+
+export const getPublicTimeSlots = async (): Promise<{
+  data: TimeSlot[];
+  success: boolean;
+}> => {
+  const response = await fetch(`${API_BASE_URL}/public/time-slots/available`);
+  return await response.json();
+};
