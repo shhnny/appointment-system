@@ -212,7 +212,7 @@ export default function BookAppointment() {
           : null,
       );
 
-      setReferenceNumber(data.reference_no);
+      setReferenceNumber(data.data.reference_no);
       setSubmitSuccess(true);
       setStep(3);
     } catch (error: any) {
