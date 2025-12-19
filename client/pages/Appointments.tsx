@@ -382,13 +382,21 @@ export default function Appointments() {
                       <div>
                         <p className="text-sm text-gray-600">Date</p>
                         <p className="font-medium">
-                          {formatDate(selectedAppointment.time_slot.slot_date)}
+                          {readableDate(
+                            selectedAppointment.time_slot.slot_date,
+                          )}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Time</p>
                         <p className="font-medium">
-                          {formatTime(selectedAppointment.time_slot.start_time)}
+                          {formatTime12h(
+                            selectedAppointment.time_slot.start_time,
+                          )}
+                          -
+                          {formatTime12h(
+                            selectedAppointment.time_slot.end_time,
+                          )}
                         </p>
                       </div>
                       <div>
