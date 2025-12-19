@@ -11,8 +11,6 @@ interface FormData {
   fullName: string;
   email: string;
   phone: string;
-  date?: string;
-  time?: string;
   purposeId?: string;
 }
 
@@ -42,8 +40,6 @@ export default function BookAppointment() {
     fullName: "",
     email: "",
     phone: "",
-    date: "",
-    time: "",
     purposeId: "",
   });
   const [loading, setLoading] = useState({
@@ -51,8 +47,6 @@ export default function BookAppointment() {
     timeSlots: false,
     submitting: false,
   });
-  const [bookingConfirmation, setBookingConfirmation] =
-    useState<BookingConfirmation | null>(null);
   const [errors, setErrors] = useState<{
     fullName?: string;
     email?: string;
@@ -96,12 +90,6 @@ export default function BookAppointment() {
 
     loadTimeSlot();
   }, []);
-
-  const getMinDate = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split("T")[0];
-  };
 
   // Email validation - requires @gmail.com
   const validateEmail = (email: string): boolean => {
@@ -161,17 +149,10 @@ export default function BookAppointment() {
         setErrors(newErrors);
       }
     } else if (step === 2) {
-      if (!formData.date) newErrors.date = "Date is required";
-      if (!formData.time) newErrors.time = "Time is required";
       if (!formData.purposeId) newErrors.purpose = "Purpose is required";
 
       if (Object.keys(newErrors).length === 0) {
         setErrors({});
-
-        setBookingConfirmation({
-          date: formData.date,
-          time: formData.time,
-        });
 
         // Submit to Laravel API
         await submitToBackend();
@@ -192,25 +173,10 @@ export default function BookAppointment() {
         timeslot_id: timeSlot.timeslot_id,
         resident_id: residentId,
         service_id: formData.purposeId, // This should be service ID
-        time_slot_id: formData.time, // This should be time slot ID
-        appointment_date: formData.date,
-        appointment_time: formData.time,
         purpose_notes: "", // Add notes if you have a field for it
       };
 
       const data = await createAppointment(appointmentData);
-
-      console.log("data: ", data);
-
-      // Update confirmation with reference number
-      setBookingConfirmation((prev) =>
-        prev
-          ? {
-              ...prev,
-              reference_no: data.data.reference_no,
-            }
-          : null,
-      );
 
       setReferenceNumber(data.data.reference_no);
       setSubmitSuccess(true);
@@ -237,12 +203,9 @@ export default function BookAppointment() {
       fullName: "",
       email: "",
       phone: "",
-      date: undefined,
-      time: undefined,
       purposeId: "",
     });
     setErrors({});
-    setBookingConfirmation(null);
     setSubmitSuccess(false);
     setReferenceNumber("");
     setTimeSlot(null);
@@ -478,83 +441,6 @@ export default function BookAppointment() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                  <input
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => handleInputChange("date", e.target.value)}
-                    min={getMinDate()}
-                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none ${
-                      errors.date
-                        ? "border-red-500 focus:border-red-500"
-                        : "border-transparent focus:border-primary"
-                    }`}
-                  />
-                </div>
-                {errors.date && (
-                  <p className="text-red-500 text-sm mt-1">{errors.date}</p>
-                )}
-              </div>
-
-              <div>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                    <svg
-                      className="w-5 h-5 text-muted-foreground"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-
-                  <input
-                    type="time"
-                    id="minutes"
-                    name="minutes"
-                    value={formData.time}
-                    className={`w-full pl-10 pr-4 py-3 bg-muted rounded-lg border focus:outline-none appearance-none ${
-                      errors.time
-                        ? "border-red-500 focus:border-red-500"
-                        : loading.timeSlots || !formData.date
-                          ? "opacity-50 cursor-not-allowed"
-                          : "border-transparent focus:border-primary"
-                    }`}
-                    onChange={(e) => handleInputChange("time", e.target.value)}
-                  />
-                </div>
-                {errors.time && (
-                  <p className="text-red-500 text-sm mt-1">{errors.time}</p>
-                )}
-                {loading.timeSlots && !errors.time && formData.date && (
-                  <p className="text-sm text-gray-500 mt-1">
-                    Loading available time slots...
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                    <svg
-                      className="w-5 h-5 text-muted-foreground"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                       />
                     </svg>
@@ -573,7 +459,7 @@ export default function BookAppointment() {
                     }`}
                   >
                     <option value="" disabled hidden>
-                      Select an option
+                      Select a purpose
                     </option>
                     {services.map((service) => (
                       <option
@@ -613,7 +499,7 @@ export default function BookAppointment() {
           )}
 
           {/* Step 3: Confirmation */}
-          {timeSlot && step === 3 && bookingConfirmation && (
+          {step === 3 && timeSlot && referenceNumber && (
             <div className="text-center py-8">
               <div className="mb-6 flex justify-center">
                 <div
@@ -656,7 +542,7 @@ export default function BookAppointment() {
               </h2>
 
               <div className="bg-muted rounded-lg p-6 mb-6 inline-block">
-                <div className="flex flex-col items-center justify-center gap-4 text-center">
+                <div className="flex flex-col items-center justify-center gap-1 text-center">
                   <div className="flex items-center gap-2">
                     <svg
                       className="w-5 h-5 text-primary"
@@ -666,7 +552,7 @@ export default function BookAppointment() {
                       <path d="M6 2a1 1 0 000 2h8a1 1 0 100-2H6zM4 5a2 2 0 012-2 1 1 0 000 2H2a1 1 0 00-1 1v10a1 1 0 001 1h16a1 1 0 001-1V6a1 1 0 00-1-1h-4a1 1 0 000-2 2 2 0 00-2-2H6a2 2 0 00-2 2z" />
                     </svg>
                     <span className="font-semibold text-foreground">
-                      {readableDate(bookingConfirmation.date)}
+                      {readableDate(timeSlot.slot_date)}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -682,12 +568,13 @@ export default function BookAppointment() {
                       />
                     </svg>
                     <span className="font-semibold text-foreground">
-                      {formatTime12h(bookingConfirmation.time)}
+                      {formatTime12h(timeSlot.start_time)}-
+                      {formatTime12h(timeSlot.end_time)}
                     </span>
                   </div>
 
                   {referenceNumber && (
-                    <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center gap-2">
                       <svg
                         className="w-5 h-5 text-primary"
                         fill="currentColor"

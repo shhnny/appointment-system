@@ -8,7 +8,7 @@ import HelpCentre from "./pages/HelpCentre";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Notifications from "./pages/Notifications";
-import Reports from "./pages/Reports";
+// import Reports from "./pages/Reports";
 import ResidentDashboard from "./pages/ResidentDashboard";
 import Settings from "./pages/Settings";
 import TimeSlots from "./pages/TimeSlots";
@@ -25,7 +25,7 @@ function App() {
         <Route path="/admin/time-slots" element={<TimeSlots />} />
         <Route path="/admin/create-time-slot" element={<CreateSlot />} />
         <Route path="/admin/appointments" element={<Appointments />} />
-        <Route path="/admin/reports" element={<Reports />} />
+        {/* <Route path="/admin/reports" element={<Reports />} /> */}
         <Route path="/admin/settings" element={<Settings />} />
         <Route path="/admin/help" element={<HelpCentre />} />
         <Route path="/admin/notifications" element={<Notifications />} />

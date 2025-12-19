@@ -2,6 +2,7 @@ import { getTimeSlots } from "@/api/requests/time_slot";
 import AdminHeader from "@/components/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar";
 import { TimeSlot } from "@/interfaces/time_slot.interface";
+import { formatTime12h, readableDate } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -114,8 +115,9 @@ export default function TimeSlots() {
                           className="border-b border-border hover:bg-gray-50 transition-colors"
                         >
                           <td className="py-4 px-6 text-sm text-foreground">
-                            {item.slot_date} ({item.start_time} -{" "}
-                            {item.end_time})
+                            {readableDate(item.slot_date)} (
+                            {formatTime12h(item.start_time)}-
+                            {formatTime12h(item.end_time)})
                           </td>
                           <td className="py-4 px-6 text-sm text-foreground">
                             {item.available_slots}

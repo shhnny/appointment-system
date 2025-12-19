@@ -2,6 +2,7 @@ import { getAppointments } from "@/api/requests/appointment";
 import AdminHeader from "@/components/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar";
 import { Appointment } from "@/interfaces/appointment.interface";
+import { formatTime12h, readableDate } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export default function Appointments() {
@@ -230,8 +231,9 @@ export default function Appointments() {
                               </select>
                             </td>
                             <td className="py-4 px-6 text-sm text-foreground">
-                              {item.time_slot.slot_date} @{" "}
-                              {item.time_slot.start_time}
+                              {readableDate(item.time_slot.slot_date)} (
+                              {formatTime12h(item.time_slot.start_time)}-
+                              {formatTime12h(item.time_slot.end_time)})
                             </td>
                             <td className="py-4 px-6 text-sm text-foreground font-medium">
                               {item.resident.full_name}
