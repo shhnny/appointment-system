@@ -11,6 +11,8 @@ import Notifications from "./pages/Notifications";
 import Reports from "./pages/Reports";
 import ResidentDashboard from "./pages/ResidentDashboard";
 import Settings from "./pages/Settings";
+import TimeSlots from "./pages/TimeSlots";
+import CreateSlot from "./pages/CreateSlot";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/time-slots" element={<TimeSlots />} />
+        <Route path="/admin/create-time-slot" element={<CreateSlot />} />
         <Route path="/admin/appointments" element={<Appointments />} />
         <Route path="/admin/reports" element={<Reports />} />
         <Route path="/admin/settings" element={<Settings />} />

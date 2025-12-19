@@ -1,7 +1,7 @@
+import { getAppointments } from "@/api/requests/appointment";
 import AdminHeader from "@/components/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar";
 import { Appointment } from "@/interfaces/appointment.interface";
-import { API_BASE_URL } from "@/services/api";
 import { useEffect, useState } from "react";
 
 export default function Appointments() {
@@ -15,11 +15,13 @@ export default function Appointments() {
 
   useEffect(() => {
     async function fetchAppointments() {
-      const response = await fetch(`${API_BASE_URL}/appointments`);
-      const data = await response.json();
-
-      console.log("data: ", data)
-      setAppointments(data.data);
+      try {
+        const data = await getAppointments();
+        console.log("data: ", data);
+        setAppointments(data.data);
+      } catch (error) {
+        console.log("error:", error);
+      }
     }
 
     fetchAppointments();
@@ -45,9 +47,7 @@ export default function Appointments() {
     }
   }, []);
 
-  const updateStatus = (id: number, newStatus: string) => {
-
-  };
+  const updateStatus = (id: number, newStatus: string) => {};
 
   const handleViewAppointment = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
@@ -89,7 +89,7 @@ export default function Appointments() {
       <AdminSidebar />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader currentDate={currentDate} />
+        <AdminHeader />
 
         <main className="flex-1 overflow-auto transition-all duration-75">
           <div className="p-6">
@@ -112,8 +112,9 @@ export default function Appointments() {
                     <span className="px-3 py-1 bg-yellow-500 text-white rounded-full text-sm font-semibold">
                       Pending:{" "}
                       {
-                        appointments.filter((a) => a.status.status_name === "Pending")
-                          .length
+                        appointments.filter(
+                          (a) => a.status.status_name === "Pending",
+                        ).length
                       }
                     </span>
                     <span className="px-3 py-1 bg-blue-500 text-white rounded-full text-sm font-semibold">
@@ -184,16 +185,16 @@ export default function Appointments() {
                           item.status?.toString().trim() || "Pending";
                         const finalStatus =
                           normalizedStatus === "pending" ||
-                            normalizedStatus === "Pending"
+                          normalizedStatus === "Pending"
                             ? "Pending"
                             : normalizedStatus === "confirmed" ||
-                              normalizedStatus === "Confirmed"
+                                normalizedStatus === "Confirmed"
                               ? "Confirmed"
                               : normalizedStatus === "completed" ||
-                                normalizedStatus === "Completed"
+                                  normalizedStatus === "Completed"
                                 ? "Completed"
                                 : normalizedStatus === "cancelled" ||
-                                  normalizedStatus === "Cancelled"
+                                    normalizedStatus === "Cancelled"
                                   ? "Cancelled"
                                   : "Pending"; // Default to Pending
 
@@ -215,7 +216,10 @@ export default function Appointments() {
                               <select
                                 value={item.status.status_name}
                                 onChange={(e) =>
-                                  updateStatus(item.appointment_id, e.target.value)
+                                  updateStatus(
+                                    item.appointment_id,
+                                    e.target.value,
+                                  )
                                 }
                                 className={`${statusColor} text-white px-3 py-1 rounded-full text-xs font-semibold border-0 cursor-pointer`}
                               >
@@ -226,7 +230,8 @@ export default function Appointments() {
                               </select>
                             </td>
                             <td className="py-4 px-6 text-sm text-foreground">
-                              {item.time_slot.slot_date} @ {item.time_slot.start_time}
+                              {item.time_slot.slot_date} @{" "}
+                              {item.time_slot.start_time}
                             </td>
                             <td className="py-4 px-6 text-sm text-foreground font-medium">
                               {item.resident.full_name}
@@ -387,14 +392,17 @@ export default function Appointments() {
                       <div>
                         <p className="text-sm text-gray-600">Status</p>
                         <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${selectedAppointment.status.status_name === "Pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : selectedAppointment.status.status_name === "Confirmed"
-                              ? "bg-green-100 text-green-800"
-                              : selectedAppointment.status.status_name === "Completed"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                            selectedAppointment.status.status_name === "Pending"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : selectedAppointment.status.status_name ===
+                                  "Confirmed"
+                                ? "bg-green-100 text-green-800"
+                                : selectedAppointment.status.status_name ===
+                                    "Completed"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : "bg-red-100 text-red-800"
+                          }`}
                         >
                           {selectedAppointment.status.status_name}
                         </span>
@@ -444,7 +452,10 @@ export default function Appointments() {
               <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => {
-                    updateStatus(selectedAppointment.appointment_id, "Confirmed");
+                    updateStatus(
+                      selectedAppointment.appointment_id,
+                      "Confirmed",
+                    );
                     closeModal();
                   }}
                   className="flex-1 px-3 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
@@ -466,7 +477,10 @@ export default function Appointments() {
                 </button>
                 <button
                   onClick={() => {
-                    updateStatus(selectedAppointment.appointment_id, "Completed");
+                    updateStatus(
+                      selectedAppointment.appointment_id,
+                      "Completed",
+                    );
                     closeModal();
                   }}
                   className="flex-1 px-3 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
@@ -488,7 +502,10 @@ export default function Appointments() {
                 </button>
                 <button
                   onClick={() => {
-                    updateStatus(selectedAppointment.appointment_id, "Cancelled");
+                    updateStatus(
+                      selectedAppointment.appointment_id,
+                      "Cancelled",
+                    );
                     closeModal();
                   }}
                   className="flex-1 px-2 py-1 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
@@ -522,7 +539,9 @@ export default function Appointments() {
               <button
                 onClick={() => {
                   // You can add email functionality here
-                  alert(`Email sent to ${selectedAppointment.resident.email_address}`);
+                  alert(
+                    `Email sent to ${selectedAppointment.resident.email_address}`,
+                  );
                 }}
                 className="px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors"
               >

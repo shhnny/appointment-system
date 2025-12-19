@@ -2,11 +2,7 @@ import { Notification, notificationStorage } from "@/lib/notifications";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface AdminHeaderProps {
-  currentDate?: string;
-}
-
-export default function AdminHeader({ currentDate }: AdminHeaderProps) {
+export default function AdminHeader() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);

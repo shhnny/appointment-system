@@ -4,6 +4,11 @@ import path from "path";
 
 export default defineConfig({
   root: "client",
+  server: {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  },
   plugins: [react()],
   resolve: {
     alias: {

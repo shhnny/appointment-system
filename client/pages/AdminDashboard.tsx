@@ -21,7 +21,7 @@ export default function AdminDashboard() {
       const response = await fetch(`${API_BASE_URL}/appointments`);
       const data = await response.json();
 
-      console.log("data: ", data)
+      console.log("data: ", data);
       const sortedAppointments = (data.data || []).sort((a, b) => {
         const dateA = new Date(`${a.date} ${a.time}`).getTime();
         const dateB = new Date(`${b.date} ${b.time}`).getTime();
@@ -34,7 +34,6 @@ export default function AdminDashboard() {
 
     fetchAppointments();
   }, []);
-
 
   useEffect(() => {
     const now = new Date();
@@ -56,7 +55,6 @@ export default function AdminDashboard() {
     }
   }, []);
 
-
   const calculateServiceDemand = (appts: Appointment[]) => {
     if (appts.length === 0) {
       setServiceDemand([
@@ -69,11 +67,10 @@ export default function AdminDashboard() {
 
     const serviceCount: { [key: string]: number } = {};
 
-
     appts.forEach((appt) => {
-      serviceCount[appt.service.service_name] = (serviceCount[appt.service.service_name] || 0) + 1;
+      serviceCount[appt.service.service_name] =
+        (serviceCount[appt.service.service_name] || 0) + 1;
     });
-
 
     const sortedServices = Object.entries(serviceCount)
       .map(([purpose, count]) => ({
@@ -83,7 +80,6 @@ export default function AdminDashboard() {
       .sort((a, b) => b.count - a.count)
       .slice(0, 3); // Top 3
 
-
     const total = appts.length;
     const demandData = sortedServices.map((service, index) => ({
       rank: `${index + 1}. ${service.purpose}`,
@@ -91,7 +87,6 @@ export default function AdminDashboard() {
       percent:
         total > 0 ? `${((service.count / total) * 100).toFixed(1)}%` : "0%",
     }));
-
 
     while (demandData.length < 3) {
       const defaultServices = [
@@ -109,23 +104,25 @@ export default function AdminDashboard() {
     setServiceDemand(demandData);
   };
 
-
   useEffect(() => {
     calculateServiceDemand(appointments);
   }, [appointments]);
 
   const updateAppointmentStatus = (id: string, newStatus: string) => {
     const updatedAppointments = appointments.map((appt) =>
-      appt.reference_no === id ? { ...appt, status: { status_name: newStatus } } : appt,
+      appt.reference_no === id
+        ? { ...appt, status: { status_name: newStatus } }
+        : appt,
     );
     setAppointments(updatedAppointments);
   };
 
   const deleteAppointment = (id: string) => {
-    const filteredAppointments = appointments.filter((appt) => appt.reference_no !== id);
+    const filteredAppointments = appointments.filter(
+      (appt) => appt.reference_no !== id,
+    );
     setAppointments(filteredAppointments);
   };
-
 
   const getStatusClass = (status: string) => {
     switch (status) {
@@ -148,7 +145,7 @@ export default function AdminDashboard() {
       <AdminSidebar />
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader currentDate={currentDate} />
+        <AdminHeader />
 
         <main className="flex-1 overflow-auto transition-all duration-75">
           <div className="p-6">
@@ -189,8 +186,9 @@ export default function AdminDashboard() {
                     </p>
                     <p className="text-3xl font-bold text-yellow-500 mt-2">
                       {
-                        appointments.filter((a) => a.status.status_name === "Pending")
-                          .length
+                        appointments.filter(
+                          (a) => a.status.status_name === "Pending",
+                        ).length
                       }
                     </p>
                   </div>
@@ -209,8 +207,9 @@ export default function AdminDashboard() {
                     </p>
                     <p className="text-3xl font-bold text-green-500 mt-2">
                       {
-                        appointments.filter((a) => a.status.status_name === "Confirmed")
-                          .length
+                        appointments.filter(
+                          (a) => a.status.status_name === "Confirmed",
+                        ).length
                       }
                     </p>
                   </div>
@@ -229,8 +228,9 @@ export default function AdminDashboard() {
                     </p>
                     <p className="text-3xl font-bold text-blue-500 mt-2">
                       {
-                        appointments.filter((a) => a.status.status_name === "Completed")
-                          .length
+                        appointments.filter(
+                          (a) => a.status.status_name === "Completed",
+                        ).length
                       }
                     </p>
                   </div>
@@ -241,7 +241,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left column - Analytics */}
               <div className="lg:col-span-3 space-y-6">
@@ -250,7 +249,6 @@ export default function AdminDashboard() {
                   <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
                     <span></span>Reports and Analytics
                   </h2>
-
 
                   <div className="mb-6">
                     <h3 className="font-semibold text-foreground mb-4">
@@ -285,7 +283,6 @@ export default function AdminDashboard() {
                     </table>
                   </div>
                 </div>
-
                 <div className="bg-white rounded-lg shadow-sm p-6 border border-border">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-semibold text-foreground">
@@ -345,7 +342,8 @@ export default function AdminDashboard() {
                                 {item.service.service_name}
                               </td>
                               <td className="py-3 px-3 text-foreground">
-                                {item.time_slot.slot_date} @ {item.time_slot.start_time}
+                                {item.time_slot.slot_date} @{" "}
+                                {item.time_slot.start_time}
                               </td>
                               <td className="py-3 px-3 text-foreground">
                                 {item.resident.phone_number}
@@ -371,7 +369,9 @@ export default function AdminDashboard() {
                                     Approve
                                   </button>
                                   <button
-                                    onClick={() => deleteAppointment(item.reference_no)}
+                                    onClick={() =>
+                                      deleteAppointment(item.reference_no)
+                                    }
                                     className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                                   >
                                     Delete
@@ -387,7 +387,6 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
-
 
             <div className="mt-8 text-center text-xs text-muted-foreground py-4 border-t border-border">
               Barangay Information and Service Management System © 2025 - All
