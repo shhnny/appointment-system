@@ -73,8 +73,6 @@ export default function Appointments() {
     try {
       const data = await updateTimeSlotStatus({ id, value });
 
-      console.log(data);
-
       setAppointments(
         appointments.map((item) =>
           item.appointment_id === id
@@ -95,6 +93,29 @@ export default function Appointments() {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedAppointment(null);
+  };
+
+  const updateAppointmentStatus = async (status_name: string) => {
+    const confirmStatus = statuses.find(
+      (item) => item.status_name === status_name,
+    );
+
+    if (!confirmStatus) return;
+
+    const data = await updateTimeSlotStatus({
+      id: selectedAppointment.appointment_id,
+      value: confirmStatus.status_id,
+    });
+
+    setAppointments(
+      appointments.map((item) =>
+        item.appointment_id === selectedAppointment.appointment_id
+          ? { ...item, status: { ...data.data } }
+          : item,
+      ),
+    );
+
+    closeModal();
   };
 
   const filtered =
@@ -455,9 +476,7 @@ export default function Appointments() {
               {/* Actions */}
               <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
                 <button
-                  onClick={() => {
-                    closeModal();
-                  }}
+                  onClick={() => updateAppointmentStatus("Confirmed")}
                   className="flex-1 px-3 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
                 >
                   <svg
@@ -476,9 +495,7 @@ export default function Appointments() {
                   Confirm Appointment
                 </button>
                 <button
-                  onClick={() => {
-                    closeModal();
-                  }}
+                  onClick={() => updateAppointmentStatus("Completed")}
                   className="flex-1 px-3 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
                 >
                   <svg
@@ -497,9 +514,7 @@ export default function Appointments() {
                   Mark as Completed
                 </button>
                 <button
-                  onClick={() => {
-                    closeModal();
-                  }}
+                  onClick={() => updateAppointmentStatus("Cancelled")}
                   className="flex-1 px-2 py-1 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
                 >
                   <svg
