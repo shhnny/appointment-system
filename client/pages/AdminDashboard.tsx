@@ -1,6 +1,8 @@
+import { getStatuses } from "@/api/requests/status";
 import AdminHeader from "@/components/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar";
 import { Appointment } from "@/interfaces/appointment.interface";
+import { Status } from "@/interfaces/status.interface";
 import { API_BASE_URL } from "@/services/api";
 import { useEffect, useState } from "react";
 
@@ -15,6 +17,7 @@ export default function AdminDashboard() {
   const [serviceDemand, setServiceDemand] = useState<ServiceDemand[]>([]);
   const [currentDate, setCurrentDate] = useState("");
   const [currentGreeting, setCurrentGreeting] = useState("");
+  const [statuses, setStatuses] = useState<Status[]>([]);
 
   useEffect(() => {
     async function fetchAppointments() {
@@ -33,6 +36,20 @@ export default function AdminDashboard() {
     }
 
     fetchAppointments();
+  }, []);
+
+  useEffect(() => {
+    async function fetchStatuses() {
+      try {
+        const data = await getStatuses();
+        console.log("data: ", data);
+        setStatuses(data.data);
+      } catch (error) {
+        console.log("error:", error);
+      }
+    }
+
+    fetchStatuses();
   }, []);
 
   useEffect(() => {

@@ -21,6 +21,7 @@ export default function Appointments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
+    if (isModalOpen) return;
     async function fetchAppointments() {
       try {
         const data = await getAppointments();
@@ -32,7 +33,7 @@ export default function Appointments() {
     }
 
     fetchAppointments();
-  }, []);
+  }, [isModalOpen]);
 
   useEffect(() => {
     async function fetchStatuses() {
@@ -455,10 +456,6 @@ export default function Appointments() {
               <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => {
-                    updateStatus(
-                      selectedAppointment.appointment_id,
-                      "Confirmed",
-                    );
                     closeModal();
                   }}
                   className="flex-1 px-3 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
@@ -480,10 +477,6 @@ export default function Appointments() {
                 </button>
                 <button
                   onClick={() => {
-                    updateStatus(
-                      selectedAppointment.appointment_id,
-                      "Completed",
-                    );
                     closeModal();
                   }}
                   className="flex-1 px-3 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
@@ -505,10 +498,6 @@ export default function Appointments() {
                 </button>
                 <button
                   onClick={() => {
-                    updateStatus(
-                      selectedAppointment.appointment_id,
-                      "Cancelled",
-                    );
                     closeModal();
                   }}
                   className="flex-1 px-2 py-1 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
