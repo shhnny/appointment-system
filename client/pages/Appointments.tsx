@@ -1,12 +1,18 @@
-import { getAppointments } from "@/api/requests/appointment";
+import {
+  getAppointments,
+  updateTimeSlotStatus,
+} from "@/api/requests/appointment";
+import { getStatuses } from "@/api/requests/status";
 import AdminHeader from "@/components/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar";
 import { Appointment } from "@/interfaces/appointment.interface";
+import { Status } from "@/interfaces/status.interface";
 import { formatTime12h, readableDate } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export default function Appointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [statuses, setStatuses] = useState<Status[]>([]);
   const [filterStatus, setFilterStatus] = useState("All Status");
   const [currentDate, setCurrentDate] = useState("");
   const [currentGreeting, setCurrentGreeting] = useState("");
@@ -29,6 +35,20 @@ export default function Appointments() {
   }, []);
 
   useEffect(() => {
+    async function fetchStatuses() {
+      try {
+        const data = await getStatuses();
+        console.log("data: ", data);
+        setStatuses(data.data);
+      } catch (error) {
+        console.log("error:", error);
+      }
+    }
+
+    fetchStatuses();
+  }, []);
+
+  useEffect(() => {
     const now = new Date();
     const options: Intl.DateTimeFormatOptions = {
       weekday: "long",
@@ -48,7 +68,23 @@ export default function Appointments() {
     }
   }, []);
 
-  const updateStatus = (id: number, newStatus: string) => {};
+  const updateStatus = async (id: number, value: number) => {
+    try {
+      const data = await updateTimeSlotStatus({ id, value });
+
+      console.log(data);
+
+      setAppointments(
+        appointments.map((item) =>
+          item.appointment_id === id
+            ? { ...item, status: { ...data.data } }
+            : item,
+        ),
+      );
+    } catch (error) {
+      console.error("error:", error);
+    }
+  };
 
   const handleViewAppointment = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
@@ -64,26 +100,6 @@ export default function Appointments() {
     filterStatus === "All Status"
       ? appointments
       : appointments.filter((app) => app.status.status_name === filterStatus);
-
-  // Function to format date for display
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  // Function to format time for display
-  const formatTime = (timeString: string) => {
-    const [hours, minutes] = timeString.split(":");
-    const hour = parseInt(hours, 10);
-    const period = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour > 12 ? hour - 12 : hour;
-    return `${displayHour}:${minutes} ${period}`;
-  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -181,33 +197,6 @@ export default function Appointments() {
                       </tr>
                     ) : (
                       filtered.map((item) => {
-                        // NORMALIZE THE STATUS FIRST
-                        const normalizedStatus =
-                          item.status?.toString().trim() || "Pending";
-                        const finalStatus =
-                          normalizedStatus === "pending" ||
-                          normalizedStatus === "Pending"
-                            ? "Pending"
-                            : normalizedStatus === "confirmed" ||
-                                normalizedStatus === "Confirmed"
-                              ? "Confirmed"
-                              : normalizedStatus === "completed" ||
-                                  normalizedStatus === "Completed"
-                                ? "Completed"
-                                : normalizedStatus === "cancelled" ||
-                                    normalizedStatus === "Cancelled"
-                                  ? "Cancelled"
-                                  : "Pending"; // Default to Pending
-
-                        const statusColor =
-                          finalStatus === "Pending"
-                            ? "bg-yellow-500"
-                            : finalStatus === "Confirmed"
-                              ? "bg-green-500"
-                              : finalStatus === "Completed"
-                                ? "bg-blue-500"
-                                : "bg-red-500";
-
                         return (
                           <tr
                             key={item.appointment_id}
@@ -215,19 +204,23 @@ export default function Appointments() {
                           >
                             <td className="py-4 px-6">
                               <select
-                                value={item.status.status_name}
-                                onChange={(e) =>
+                                value={item.status.status_id}
+                                onChange={(e) => {
                                   updateStatus(
                                     item.appointment_id,
-                                    e.target.value,
-                                  )
-                                }
-                                className={`${statusColor} text-white px-3 py-1 rounded-full text-xs font-semibold border-0 cursor-pointer`}
+                                    Number(e.target.value),
+                                  );
+                                }}
+                                className={`bg-primary text-white px-3 py-1 rounded-full text-xs font-semibold border-0 cursor-pointer`}
                               >
-                                <option value="Pending">Pending</option>
-                                <option value="Confirmed">Confirmed</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Cancelled">Cancelled</option>
+                                {statuses.map((status) => (
+                                  <option
+                                    key={status.status_id}
+                                    value={status.status_id}
+                                  >
+                                    {status.status_name}
+                                  </option>
+                                ))}
                               </select>
                             </td>
                             <td className="py-4 px-6 text-sm text-foreground">
