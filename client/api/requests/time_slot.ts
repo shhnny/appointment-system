@@ -37,3 +37,25 @@ export const getPublicTimeSlots = async (): Promise<{
   const response = await fetch(`${API_BASE_URL}/public/time-slots/available`);
   return await response.json();
 };
+
+export const updateTimeSlotStatus = async (params: {
+  timeslot_id: number;
+}): Promise<{
+  success: boolean;
+  message: string;
+  errors?: any;
+}> => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/appointments/${params.timeslot_id}/status`,
+    {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    },
+  );
+
+  return await response.json();
+};

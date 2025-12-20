@@ -1,5 +1,4 @@
-import AdminHeader from "@/components/AdminHeader";
-import AdminSidebar from "@/components/AdminSidebar";
+import { Link } from "react-router-dom";
 
 export default function HelpCentre() {
   const contactSupport = () => {
@@ -9,14 +8,27 @@ export default function HelpCentre() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <AdminSidebar />
-
+    <div className="flex flex-col h-screen bg-gray-50 ">
+      <div className=" px-10">
+        <div className="mb-8">
+          <Link
+            to="/"
+            className="flex items-center gap-3 text-primary hover:text-primary/80"
+          >
+            <div className="w-20 h-20 flex items-center justify-center">
+              <img
+                src="/assets/JP RIZAL.png"
+                alt="Barangay JP Rizal Logo"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="font-semibold">Barangay JP Rizal</span>
+          </Link>
+        </div>
+      </div>
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader />
-
         <main className="flex-1 overflow-auto">
-          <div className="p-6">
+          <div className="p-6 text-center">
             <h1 className="text-3xl font-bold text-foreground mb-2">
               Help & Support Centre
             </h1>
