@@ -76,10 +76,12 @@ export default function Appointments() {
       setAppointments(
         appointments.map((item) =>
           item.appointment_id === id
-            ? { ...item, status: { ...data.data } }
+            ? { ...item, status: data.data.status }
             : item,
         ),
       );
+
+      console.log(appointments);
     } catch (error) {
       console.error("error:", error);
     }
@@ -110,7 +112,7 @@ export default function Appointments() {
     setAppointments(
       appointments.map((item) =>
         item.appointment_id === selectedAppointment.appointment_id
-          ? { ...item, status: { ...data.data } }
+          ? { ...item, status: data.data.status }
           : item,
       ),
     );

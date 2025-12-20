@@ -34,7 +34,7 @@ export const updateTimeSlotStatus = async (params: {
   value: number;
 }): Promise<{
   success: boolean;
-  data: Status;
+  data: Appointment;
   message: string;
   errors?: any;
 }> => {
