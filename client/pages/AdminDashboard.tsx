@@ -125,15 +125,6 @@ export default function AdminDashboard() {
     calculateServiceDemand(appointments);
   }, [appointments]);
 
-  const updateAppointmentStatus = (id: string, newStatus: string) => {
-    const updatedAppointments = appointments.map((appt) =>
-      appt.reference_no === id
-        ? { ...appt, status: { status_name: newStatus } }
-        : appt,
-    );
-    setAppointments(updatedAppointments);
-  };
-
   const deleteAppointment = (id: string) => {
     const filteredAppointments = appointments.filter(
       (appt) => appt.reference_no !== id,
@@ -331,9 +322,9 @@ export default function AdminDashboard() {
                           <th className="text-left py-3 px-3 font-semibold text-muted-foreground">
                             Status
                           </th>
-                          <th className="text-left py-3 px-3 font-semibold text-muted-foreground">
-                            Actions
-                          </th>
+                          {/* <th className="text-left py-3 px-3 font-semibold text-muted-foreground"> */}
+                          {/*   Actions */}
+                          {/* </th> */}
                         </tr>
                       </thead>
                       <tbody>
@@ -372,29 +363,29 @@ export default function AdminDashboard() {
                                   {item.status.status_name}
                                 </span>
                               </td>
-                              <td className="py-3 px-3">
-                                <div className="flex gap-2">
-                                  <button
-                                    onClick={() =>
-                                      updateAppointmentStatus(
-                                        item.reference_no,
-                                        "Confirmed",
-                                      )
-                                    }
-                                    className="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
-                                  >
-                                    Approve
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      deleteAppointment(item.reference_no)
-                                    }
-                                    className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </td>
+                              {/* <td className="py-3 px-3"> */}
+                              {/*   <div className="flex gap-2"> */}
+                              {/*     <button */}
+                              {/*       onClick={() => */}
+                              {/*         updateAppointmentStatus( */}
+                              {/*           item.reference_no, */}
+                              {/*           "Confirmed", */}
+                              {/*         ) */}
+                              {/*       } */}
+                              {/*       className="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600" */}
+                              {/*     > */}
+                              {/*       Approve */}
+                              {/*     </button> */}
+                              {/*     <button */}
+                              {/*       onClick={() => */}
+                              {/*         deleteAppointment(item.reference_no) */}
+                              {/*       } */}
+                              {/*       className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" */}
+                              {/*     > */}
+                              {/*       Delete */}
+                              {/*     </button> */}
+                              {/*   </div> */}
+                              {/* </td> */}
                             </tr>
                           ))
                         )}
